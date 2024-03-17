@@ -1,4 +1,4 @@
-# ts-utils
+# ts-utils [![GitHub Actions badge](https://github.com/jeremy-code/ts-utils/actions/workflows/ci.yml/badge.svg)](https://github.com/jeremy-code/ts-utils/actions/workflows/ci.yml) [![License](https://img.shields.io/github/license/jeremy-code/ts-utils)](LICENSE)
 
 # Table of contents
 
@@ -33,35 +33,31 @@ export const shallowCompare = <T extends Record<string, unknown>>(
 ```
 
 ```ts
-/**
- * naive implementation, some caveats, see
- * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#description}
- */
-export const deepCompare = (obj1, obj2) =>
-  JSON.stringify(obj1) === JSON.stringify(obj2);
-```
-
-```ts
 // converts formData to object where values are either singular value or array (e.g. checkboxes)
 export const parseFormData = (formData: FormData) =>
-  Array.from(formData.entries()).reduce((acc, [k, v]) => {
+  Array.from(formData.entries()).reduce<
+    Record<string, FormDataEntryValue | FormDataEntryValue[]>
+  >((acc, [k, v]) => {
     if (!acc[k]) {
       const values = formData.getAll(k);
       acc[k] = values.length > 1 ? values : v;
     }
     return acc;
-  }, {} as Record<string, FormDataEntryValue | FormDataEntryValue[]>);
+  }, {});
 ```
 
 ```ts
 export const parseUrlSearchParams = (searchParams: URLSearchParams) =>
-  Array.from(searchParams).reduce((acc, [k, v]) => {
-    if (!acc[k]) {
-      const values = formData.getAll(k);
-      acc[k] = values.length > 1 ? values : v;
-    }
-    return acc;
-  }, {} as Record<string, string | string[]>);
+  Array.from(searchParams).reduce<Record<string, string | string[]>>(
+    (acc, [k, v]) => {
+      if (!acc[k]) {
+        const values = searchParams.getAll(k);
+        acc[k] = values.length > 1 ? values : v;
+      }
+      return acc;
+    },
+    {}
+  );
 ```
 
 # Array
@@ -91,23 +87,12 @@ export const range = (start: number, end: number, step = 1) =>
 ```
 
 ```ts
-const chunk = <T>(input: T[], size: number) => {
-  return input.reduce((arr, item, i) => {
+const chunk = <T>(arr: T[], size: number) =>
+  input.reduce((arr, item, i) => {
     return i % size === 0
       ? [...arr, [item]]
       : [...arr.slice(0, -1), [...arr.slice(-1)[0], item]];
   }, []);
-};
-```
-
-```ts
-arr.flat(Infinity);
-
-// recursive
-const flattenDeep = <T>(arr: T[]) =>
-  arr.flatMap((subArray, index) =>
-    Array.isArray(subArray) ? flattenDeep(subArray) : subArray
-  );
 ```
 
 # Number
@@ -122,12 +107,14 @@ function randomNum(min: number, max: number) {
 
 ```js
 // random int in range [min, max] inclusive
-function randomInt(min: number, max: number) {
-  // change to (Math.floor(max) - Math.ceil(min)) for max to be exclusive
-  return Math.floor(
+// changie to (Math.floor(max) - Math.ceil(min)) for max to be exclusive
+const randomInt = (min: number, max: number) =>
+  Math.floor(
     Math.random() * (Math.floor(max) - Math.ceil(min) + 1) + Math.ceil(min)
   );
-}
+
+const randomInt = (min: number, max: number) =>
+  ~~(Math.random() * (~~max - Math.ceil(min) + 1) + Math.ceil(min));
 ```
 
 # Function
@@ -190,10 +177,6 @@ export const truncateMiddle = (
       placeholder +
       text.slice(-Math.floor((maxLength - placeholder.length) / 2))
     : text;
-```
-
-```ts
-export const normalize = (str: string) => str.normalize().trim().toWellFormed();
 ```
 
 # Colors
