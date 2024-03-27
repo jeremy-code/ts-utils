@@ -4,5 +4,7 @@ export function isPlainObject(obj: unknown) {
   while (Object.getPrototypeOf(proto) !== null) {
     proto = Object.getPrototypeOf(proto);
   }
-  return Object.getPrototypeOf(obj) === proto;
+  return (
+    Object.getPrototypeOf(obj) === proto || Object.getPrototypeOf(obj) === null
+  );
 }

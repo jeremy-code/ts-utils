@@ -1,4 +1,4 @@
 export const formatNumber = (
   number: unknown,
-  ...params: ConstructorParameters<typeof Intl.NumberFormat>
+  ...params: ConstructorParameters<Intl.NumberFormatConstructor>
 ) => new Intl.NumberFormat(...params).format(Number(number));

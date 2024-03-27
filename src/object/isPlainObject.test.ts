@@ -60,4 +60,9 @@ describe("isPlainObject", () => {
   test("returns false for symbols", () => {
     expect(isPlainObject(Symbol("sym"))).toBe(false);
   });
+
+  // Test with null prototype
+  test("returns true for objects with null prototype", () => {
+    expect(isPlainObject(Object.create(null))).toBe(true);
+  });
 });

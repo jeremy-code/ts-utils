@@ -18,7 +18,7 @@ const UNITS = [
  */
 export const formatBytes = (
   bytes: number,
-  ...[locales, options]: ConstructorParameters<typeof Intl.NumberFormat>
+  ...[locales, options]: ConstructorParameters<Intl.NumberFormatConstructor>
 ) => {
   if (!bytes || bytes <= 0) return `0 ${UNITS[0]}s`;
 

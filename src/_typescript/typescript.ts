@@ -26,10 +26,6 @@ type Char = Letter | Digit;
 
 type Prettify<T> = { [K in keyof T]: T[K] } & {};
 
-type NestedPrettify<T> = {
-  [K in keyof T]: T[K] extends object ? Prettify<T[K]> : T[K];
-} & {};
-
 interface Recursive<T> {
   [key: string]: T | Recursive<T>;
 }
