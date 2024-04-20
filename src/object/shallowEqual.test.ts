@@ -27,21 +27,21 @@ describe("shallowCompare", () => {
   test("returns false when comparing objects with different types", () => {
     const obj1 = { a: 1, b: "test" };
     const obj2 = { a: "1", b: "test" }; // Note: '1' is a string here
-    // @ts-ignore: next line is intentionally incorrect to test runtime behavior
+    // @ts-expect-error: next line is intentionally incorrect to test runtime behavior
     expect(shallowEqual(obj1, obj2)).toBe(false);
   });
 
   test("returns false when comparing an object with null", () => {
     const obj1 = { a: 1, b: "test" };
     const obj2 = null;
-    // @ts-ignore: next line is intentionally incorrect to test runtime behavior
+    // @ts-expect-error: next line is intentionally incorrect to test runtime behavior
     expect(shallowEqual(obj1, obj2)).toBe(false);
   });
 
   test("returns false when comparing an object with undefined", () => {
     const obj1 = { a: 1, b: "test" };
     const obj2 = undefined;
-    // @ts-ignore: next line is intentionally incorrect to test runtime behavior
+    // @ts-expect-error: next line is intentionally incorrect to test runtime behavior
     expect(shallowEqual(obj1, obj2)).toBe(false);
   });
 });

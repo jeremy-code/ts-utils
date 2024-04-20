@@ -11,7 +11,7 @@ export const segment = (
   ...[locales, options]: ConstructorParameters<typeof Intl.Segmenter>
 ) =>
   Array.from(new Intl.Segmenter(locales, options).segment(input)).map(
-    (s) => s.segment
+    (s) => s.segment,
   );
 
 // segment by word
@@ -21,13 +21,14 @@ export const segmentByWord = (
   input: string,
   // if not interested in locale-specific word segmentation, may be ommitted and
   // just set locale to undefined and do not provide options
-  ...[locales, options]: ConstructorParameters<typeof Intl.Segmenter>
+  locales?: Intl.LocalesArgument,
+  options?: Omit<Intl.SegmenterOptions, "granularity">,
 ) =>
   Array.from(
     new Intl.Segmenter(locales, {
       granularity: "word",
       ...options,
-    }).segment(input)
+    }).segment(input),
   )
     .filter((s) => s.isWordLike)
     .map((s) => s.segment);

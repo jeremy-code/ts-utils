@@ -1,7 +1,7 @@
 export function throttle<T extends (...args: Parameters<T>) => ReturnType<T>>(
   callback: T,
   ms: number,
-  immediate?: boolean
+  immediate?: boolean,
 ) {
   let lastTime = immediate ? -ms : 0;
 

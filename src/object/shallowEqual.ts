@@ -5,7 +5,7 @@
 
 export const shallowEqual = <T extends Record<string, unknown>>(
   obj1: T,
-  obj2: T
+  obj2: T,
 ) => {
   if (Object.is(obj1, obj2)) return true;
   if (

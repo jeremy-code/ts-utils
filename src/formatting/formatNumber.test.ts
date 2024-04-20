@@ -11,7 +11,7 @@ describe("formatNumber", () => {
 
   test("should correctly format a number with locale and options", () => {
     expect(
-      formatNumber(123456.789, "en-US", { style: "currency", currency: "USD" })
+      formatNumber(123456.789, "en-US", { style: "currency", currency: "USD" }),
     ).toBe("$123,456.79");
   });
 

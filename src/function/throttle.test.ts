@@ -38,7 +38,7 @@ describe("throttle", () => {
 
   test("passes arguments and maintains context", () => {
     const context = { value: 42 };
-    const callback = jest.fn(function (this, arg) {
+    const callback = jest.fn(function (this: { value: number }, arg) {
       expect(this.value).toBe(42);
       expect(arg).toBe("test");
     });

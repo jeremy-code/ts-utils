@@ -1,7 +1,7 @@
 export function debounce<T extends (...args: Parameters<T>) => ReturnType<T>>(
   callback: T,
   ms?: number,
-  immediate?: boolean
+  immediate?: boolean,
 ) {
   let timeoutId: NodeJS.Timeout | undefined;
 

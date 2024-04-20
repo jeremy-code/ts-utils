@@ -1,17 +1,31 @@
 {
   "compilerOptions": {
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "target": "es2022",
-    "allowJs": true,
-    "resolveJsonModule": true,
+    /* Visit https://aka.ms/tsconfig.json to read more about this file */
+
+    /* Projects */
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "moduleDetection": "force",
+
+    /* Modules */
+    "module": "Preserve",
+    "resolveJsonModule": true,
+
+    /* JavaScript Support */
+    "allowJs": true,
+
+    /* Emit */
+    "noEmit": true,
+
+    /* Interop Constraints */
     "isolatedModules": true,
+    "esModuleInterop": true,
+
+    /* Type Checking */
     "strict": true,
     "noUncheckedIndexedAccess": true,
-    "moduleResolution": "Bundler",
-    "module": "preserve",
-    "noEmit": true,
-    "lib": ["es2022", "dom", "dom.iterable"]
+
+    /* Completeness */
+    "skipLibCheck": true
   }
 }

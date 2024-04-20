@@ -41,9 +41,12 @@ describe("isEmpty", () => {
     expect(isEmpty(new Set([1, 2, 3]))).toBe(false);
   });
 
+  test("should return true for an empty string", () => {
+    expect(isEmpty("")).toBe(true);
+  });
+
   test("should return false for non-null/undefined primitives (e.g., number, string, boolean)", () => {
     expect(isEmpty(0)).toBe(false);
-    expect(isEmpty("")).toBe(false); // Note: Empty string is considered not empty for this function.
     expect(isEmpty(false)).toBe(false);
   });
 });

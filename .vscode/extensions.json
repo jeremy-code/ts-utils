@@ -1,5 +1,7 @@
 {
   "recommendations": [
+    "esbenp.prettier-vscode",
+    "github.vscode-github-actions",
     "arcanis.vscode-zipfs"
   ]
 }

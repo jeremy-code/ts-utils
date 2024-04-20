@@ -21,7 +21,7 @@ describe("randomString function", () => {
     const length = 5;
     const str = randomString(length, customCharacters);
     expect([...str].every((char) => customCharacters.includes(char))).toBe(
-      true
+      true,
     );
     expect(str).toHaveLength(length);
   });

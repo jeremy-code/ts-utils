@@ -20,12 +20,13 @@ export const formatBytes = (
   bytes: number,
   ...[locales, options]: ConstructorParameters<Intl.NumberFormatConstructor>
 ) => {
+  // negative bytes really doesn't make sense
   if (!bytes || bytes <= 0) return `0 ${UNITS[0]}s`;
 
   // note, this is in base 10 and not base 2, so gigabyte = 1000 megabytes
   const exponent = Math.min(
     Math.floor(Math.log10(bytes) / 3),
-    UNITS.length - 1
+    UNITS.length - 1,
   );
 
   // for binary units, where 1 gigabyte = 1024 megabytes

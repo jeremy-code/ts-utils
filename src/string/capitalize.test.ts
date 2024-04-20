@@ -19,7 +19,7 @@ describe("capitalize functions", () => {
   });
 
   test("capitalize1: should handle an empty string", () => {
-    expect(capitalize1("")).toBe("undefined");
+    expect(capitalize1("")).toBe("");
   });
 
   test("capitalize2: should capitalize the first letter of a string", () => {

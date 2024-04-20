@@ -1,90 +1,93 @@
-import fs from "node:fs/promises";
-import { join, dirname } from "node:path";
-import { fileURLToPath, URL } from "node:url";
-import { Dirent, PathLike } from "node:fs";
+import fs, { readdir } from "node:fs/promises";
+import { join, relative } from "node:path";
+import type { Dirent } from "node:fs";
 
-const __dirname: string = dirname(fileURLToPath(new URL(import.meta.url)));
+// Markdown helpers
+const link = (text: string, href: string) => `[${text}](${href})`;
+const image = (alt: string, href: string) => `![${alt}](${href})`;
+const code = (lang: string, code: string) =>
+  ["```" + lang, code, "```"].join("\n");
 
-const shouldIgnoreFile = (fileName: string): boolean =>
-  fileName.endsWith(".test.ts");
+const HEADER = [
+  "# ts-utils",
+  link(
+    image(
+      "GitHub Actions badge",
+      "https://github.com/jeremy-code/ts-utils/actions/workflows/ci.yml/badge.svg",
+    ),
+    "https://github.com/jeremy-code/ts-utils/actions/workflows/ci.yml",
+  ),
+  link(
+    image(
+      "License",
+      "https://img.shields.io/github/license/jeremy-code/ts-utils",
+    ),
+    "LICENSE",
+  ),
+].join(" ");
 
-const generateLinkForFile = (
-  directoryName: string,
-  fileName: string
-): string => {
-  const anchor: string = `${directoryName}/${fileName}`
-    .replace(/\s/g, "-")
-    .toLowerCase();
-  return `- [${fileName}](#${anchor})`;
-};
-
-const generateMarkdownForFile = async (
-  filePath: string,
-  fileName: string
-): Promise<string> => {
-  const fileContents: string = await fs.readFile(filePath, {
-    encoding: "utf8",
-  });
-  return `### ${fileName}\n\`\`\`typescript\n${fileContents}\n\`\`\``;
-};
-
-interface DirectoryProcessResult {
-  toc: string;
-  detailedContent: string;
-}
-
-const processDirectory = async (
-  directoryPath: string,
-  parentPath: string = ""
-): Promise<DirectoryProcessResult> => {
-  const dirents: Dirent[] = await fs.readdir(directoryPath, {
+const updateReadMe = async () => {
+  const dirents = await readdir("./src", {
     withFileTypes: true,
+    recursive: true,
   });
-  let toc: string = "";
-  let detailedContent: string = "";
 
-  for (const dirent of dirents) {
-    if (dirent.isDirectory() && !dirent.name.startsWith("_")) {
-      const subdirPath: string = join(parentPath, dirent.name);
-      const { toc: subdirToc, detailedContent: subdirContent } =
-        await processDirectory(join(directoryPath, dirent.name), subdirPath);
-      if (subdirToc) {
-        toc += `- ${dirent.name}\n${subdirToc}`;
-        detailedContent += `\n## ${dirent.name}\n${subdirContent}`;
-      }
-    } else if (
-      dirent.isFile() &&
-      !shouldIgnoreFile(dirent.name) &&
-      dirent.name.endsWith(".ts")
+  // Group files by path (category)
+  const files = dirents.reduce<Record<string, Dirent[]>>((acc, dirent) => {
+    if (
+      dirent.isFile() && // only files
+      !relative("src", dirent.path).startsWith("_") && // ignore directories starting with "_"
+      !dirent.name.endsWith(".test.ts") // ignore test files
     ) {
-      toc += `  ${generateLinkForFile(parentPath, dirent.name)}\n`;
-      const fileContent: string = await generateMarkdownForFile(
-        join(directoryPath, dirent.name),
-        dirent.name
-      );
-      detailedContent += `\n${fileContent}\n`;
+      acc[dirent.path] = [...(acc[dirent.path] ?? []), dirent];
     }
-  }
+    return acc;
+  }, {});
 
-  return { toc, detailedContent };
-};
+  const toc = Object.entries(files)
+    .map(([filePath, dirents]) => {
+      const category = relative("src", filePath);
 
-const generateDocumentation = async (): Promise<void> => {
-  const srcDirectoryPath: string = join(__dirname, "..", "src");
-  const { toc, detailedContent }: DirectoryProcessResult =
-    await processDirectory(srcDirectoryPath);
+      return [
+        `- ${link(category, `#${category}`)}`,
+        ...dirents
+          // In GH, the anchor link doesn't support dots
+          .map(
+            ({ name }) => `\t- ${link(name, `#${name.replaceAll(".", "")}`)}`,
+          ),
+      ].join("\n");
+    })
+    .join("\n");
 
-  const header: string = `# ts-utils [![GitHub Actions badge](https://github.com/jeremy-code/ts-utils/actions/workflows/ci.yml/badge.svg)](https://github.com/jeremy-code/ts-utils/actions/workflows/ci.yml) [![License](https://img.shields.io/github/license/jeremy-code/ts-utils)](LICENSE)\n`;
-  const tocHeader: string = `# Table of Contents\n${toc}\n`;
+  const content = await Promise.all(
+    Object.entries(files).map(async ([filePath, dirents]) => {
+      const category = relative("src", filePath);
 
-  const documentation: string = `${header}\n${tocHeader}${detailedContent}`;
+      const description = await Promise.all(
+        dirents.map(async (dirent) => {
+          const content = await fs.readFile(join(dirent.path, dirent.name), {
+            encoding: "utf8",
+          });
 
-  await fs.writeFile(join(__dirname, "..", "README.md"), documentation, {
+          return [`### ${dirent.name}`, code("typescript", content)].join("\n");
+        }),
+      );
+
+      return [`## ${category}`, ...description].join("\n");
+    }),
+  );
+
+  // note: for convenience, only single linebreaks are used, and the final
+  // content is formatted with prettier
+  const readme = [HEADER, "# Table of Contents", toc, ...content].join("\n");
+
+  await fs.writeFile("./README.md", readme, {
     encoding: "utf8",
   });
+
   console.log("README.md has been generated successfully.");
 };
 
-generateDocumentation().catch((error) =>
-  console.error("Failed to generate README.md:", error)
-);
+updateReadMe().catch((e: unknown) => {
+  console.error("Failed to generate README.md:", e);
+});

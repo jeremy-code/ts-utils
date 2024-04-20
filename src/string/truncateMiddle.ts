@@ -3,7 +3,7 @@
 export const truncateMiddle = (
   text: string,
   maxLength: number,
-  placeholder = "..."
+  placeholder = "...",
 ) =>
   text.length > maxLength
     ? text.slice(0, Math.ceil((maxLength - placeholder.length) / 2)) +

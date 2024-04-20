@@ -7,5 +7,5 @@ export const parseUrlSearchParams = (urlSearchParams: URLSearchParams) =>
       }
       return acc;
     },
-    {}
+    {},
   );

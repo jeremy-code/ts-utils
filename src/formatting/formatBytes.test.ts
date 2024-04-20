@@ -18,7 +18,7 @@ describe("formatBytes", () => {
   test("applies locale formatting correctly", () => {
     expect(formatBytes(1000, "de-DE")).toBe("1 kB");
     expect(formatBytes(1234567, "de-DE", { maximumSignificantDigits: 3 })).toBe(
-      "1,23 MB"
+      "1,23 MB",
     );
   });
 });
