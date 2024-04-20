@@ -33,7 +33,6 @@ interface DirectoryProcessResult {
   detailedContent: string;
 }
 
-// Recursive function to process directories for the table of contents and detailed content
 const processDirectory = async (
   directoryPath: string,
   parentPath: string = ""

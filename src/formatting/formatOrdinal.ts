@@ -10,7 +10,7 @@ const SUFFIXES = {
 
 export const formatOrdinal = (
   num: number,
-  [locales, options]: ConstructorParameters<Intl.PluralRulesConstructor>
+  ...[locales, options]: ConstructorParameters<Intl.PluralRulesConstructor>
 ) => {
   const suffix =
     SUFFIXES[
