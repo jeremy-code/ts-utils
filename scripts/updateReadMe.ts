@@ -6,6 +6,7 @@ import type { Dirent } from "node:fs";
 const link = (text: string, href: string) => `[${text}](${href})`;
 const image = (alt: string, href: string) => `![${alt}](${href})`;
 const code = (lang: string, code: string) =>
+  // not using template strings to avoid escaping backticks
   ["```" + lang, code, "```"].join("\n");
 
 const HEADER = [
@@ -51,7 +52,7 @@ const updateReadMe = async () => {
       return [
         `- ${link(category, `#${category}`)}`,
         ...dirents
-          // In GH, the anchor link doesn't support dots
+          // In GitHub, the anchor link doesn't support dots
           .map(
             ({ name }) => `\t- ${link(name, `#${name.replaceAll(".", "")}`)}`,
           ),
@@ -64,12 +65,12 @@ const updateReadMe = async () => {
       const category = relative("src", filePath);
 
       const description = await Promise.all(
-        dirents.map(async (dirent) => {
-          const content = await fs.readFile(join(dirent.path, dirent.name), {
+        dirents.map(async (d) => {
+          const content = await fs.readFile(join(d.path, d.name), {
             encoding: "utf8",
           });
 
-          return [`### ${dirent.name}`, code("typescript", content)].join("\n");
+          return [`### ${d.name}`, code("typescript", content)].join("\n");
         }),
       );
 
@@ -79,9 +80,9 @@ const updateReadMe = async () => {
 
   // note: for convenience, only single linebreaks are used, and the final
   // content is formatted with prettier
-  const readme = [HEADER, "# Table of Contents", toc, ...content].join("\n");
+  const readMe = [HEADER, "# Table of Contents", toc, ...content].join("\n");
 
-  await fs.writeFile("./README.md", readme, {
+  await fs.writeFile("./README.md", readMe, {
     encoding: "utf8",
   });
 

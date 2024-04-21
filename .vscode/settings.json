@@ -4,6 +4,6 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
-  "typescript.enablePromptUseWorkspaceTsdk": true,
-  "eslint.experimental.useFlatConfig": true
+  "eslint.experimental.useFlatConfig": true,
+  "typescript.enablePromptUseWorkspaceTsdk": true
 }

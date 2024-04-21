@@ -3,6 +3,8 @@
 export const truncateMiddle = (
   text: string,
   maxLength: number,
+  // may want to set default placeholder to "…" (unicode ellipsis character)
+  // instead of "..." (three dots)
   placeholder = "...",
 ) =>
   text.length > maxLength

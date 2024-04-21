@@ -1,7 +1,9 @@
 import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
-import jest from "eslint-plugin-jest";
 import globals from "globals";
+
+// plugins
+import jest from "eslint-plugin-jest";
 
 export default tseslint.config(
   eslint.configs.recommended,
@@ -14,6 +16,7 @@ export default tseslint.config(
       },
       globals: {
         ...globals.node,
+        ...globals.browser,
       },
     },
   },
@@ -25,7 +28,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["*.{js,cjs,mjs}"],
+    files: ["*.{js,jsx,cjs,mjs}"],
     ...tseslint.configs.disableTypeChecked,
   },
 );
