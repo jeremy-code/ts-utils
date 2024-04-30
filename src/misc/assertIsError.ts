@@ -1,7 +1,7 @@
-export function assertIsError(e: unknown): asserts e is Error {
-  if (!(e instanceof Error)) {
-    throw new Error(`Expected an Error but got ${e?.toString() ?? "unknown"}`, {
-      cause: e,
+export function assertIsError(error: unknown): asserts error is Error {
+  if (!(error instanceof Error)) {
+    throw new Error(`Expected an Error but got ${typeof error}`, {
+      cause: error,
     });
   }
 }

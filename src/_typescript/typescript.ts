@@ -1,4 +1,4 @@
-// anything that isn't an object
+// Anything that isn't an object
 export type Primitive =
   | string
   | number
@@ -39,10 +39,11 @@ export type Char = Letter | Digit;
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type Prettify<T> = { [K in keyof T]: T[K] } & {};
+// alternatively, without {}, type Prettify<T> = { [K in keyof T]: T[K] } & unknown;
 
-// depending on use case, you may want key: PropertyKey or key: string | number
+// depending on use case, you may want key: string or key: string | number
 export interface Recursive<T> {
-  [key: string]: T | Recursive<T>;
+  [key: PropertyKey]: T | Recursive<T>;
 }
 
 export type Nullable<T> = T | null | undefined;
@@ -62,7 +63,7 @@ export type IterableElement<I> =
       ? T
       : never;
 
-export type Class<T, A extends unknown[]> = {
+export type Class<T, Args extends unknown[]> = {
   prototype: Pick<T, keyof T>;
-  new (...args: A): T;
+  new (...args: Args): T;
 };

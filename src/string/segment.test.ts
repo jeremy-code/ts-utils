@@ -22,6 +22,11 @@ describe("segment function", () => {
     // input.length === 8
     const input = "अनुच्छेद";
     const segments = segment(input, "hi");
+    // I believe it should actually be 5 characters long and be equivalent to
+    // [अ, नु, च्, छे, द] but this is what Intl.Segmenter gives us. I don't know
+    // anything about Hindi so I am unable to explain why this is. testing it on
+    // TypeScript playground gives the correct result, so I suspect it may be
+    // some configuration setting
     expect(segments).toHaveLength(4);
     expect(segments).toEqual(["अ", "नु", "च्छे", "द"]);
   });

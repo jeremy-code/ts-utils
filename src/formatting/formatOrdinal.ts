@@ -5,7 +5,7 @@ const SUFFIXES = {
   two: "nd",
   few: "rd",
   other: "th",
-  many: "th",
+  many: "th", // should never occur in English, included for TypeScript
 } satisfies Record<Intl.LDMLPluralRule, string>;
 
 export const formatOrdinal = (

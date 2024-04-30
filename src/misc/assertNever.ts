@@ -1,6 +1,5 @@
-export default function assertNever(value: never, message?: string): never {
-  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-  throw new Error(message ? message : `Unexpected value: ${value}`, {
+export function assertNever(value: never, message?: string): never {
+  throw new Error(message ?? `Unexpected value: ${JSON.stringify(value)}`, {
     cause: value,
   });
 }

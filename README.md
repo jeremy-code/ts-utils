@@ -1,43 +1,41 @@
 # ts-utils [![GitHub Actions badge](https://github.com/jeremy-code/ts-utils/actions/workflows/ci.yml/badge.svg)](https://github.com/jeremy-code/ts-utils/actions/workflows/ci.yml) [![License](https://img.shields.io/github/license/jeremy-code/ts-utils)](LICENSE)
-
 # Table of Contents
-
 - [string](#string)
-  - [capitalize.ts](#capitalizets)
-  - [randomString.ts](#randomStringts)
-  - [segment.ts](#segmentts)
-  - [truncateMiddle.ts](#truncateMiddlets)
+	- [capitalize.ts](#capitalizets)
+	- [randomString.ts](#randomStringts)
+	- [segment.ts](#segmentts)
+	- [truncateMiddle.ts](#truncateMiddlets)
 - [object](#object)
-  - [isEmpty.ts](#isEmptyts)
-  - [isPlainObject.ts](#isPlainObjectts)
-  - [parseFormData.ts](#parseFormDatats)
-  - [parseUrlSearchParams.ts](#parseUrlSearchParamsts)
-  - [shallowEqual.ts](#shallowEqualts)
+	- [isEmpty.ts](#isEmptyts)
+	- [isPlainObject.ts](#isPlainObjectts)
+	- [parseFormData.ts](#parseFormDatats)
+	- [parseUrlSearchParams.ts](#parseUrlSearchParamsts)
+	- [shallowEqual.ts](#shallowEqualts)
 - [number](#number)
-  - [randomNum.ts](#randomNumts)
+	- [randomNum.ts](#randomNumts)
+	- [relativeError.ts](#relativeErrorts)
 - [misc](#misc)
-  - [assertIsError.ts](#assertIsErrorts)
-  - [assertNever.ts](#assertNeverts)
+	- [assertIsError.ts](#assertIsErrorts)
+	- [assertNever.ts](#assertNeverts)
+	- [createRangeMapper.ts](#createRangeMapperts)
 - [function](#function)
-  - [debounce.ts](#debouncets)
-  - [sleep.ts](#sleepts)
-  - [throttle.ts](#throttlets)
+	- [debounce.ts](#debouncets)
+	- [sleep.ts](#sleepts)
+	- [throttle.ts](#throttlets)
 - [formatting](#formatting)
-  - [formatBytes.ts](#formatBytests)
-  - [formatNumber.ts](#formatNumberts)
-  - [formatOrdinal.ts](#formatOrdinalts)
-  - [uri.ts](#urits)
+	- [formatBytes.ts](#formatBytests)
+	- [formatNumber.ts](#formatNumberts)
+	- [formatOrdinal.ts](#formatOrdinalts)
+	- [uri.ts](#urits)
 - [color](#color)
-  - [color.ts](#colorts)
+	- [color.ts](#colorts)
 - [array](#array)
-  - [chunk.ts](#chunkts)
-  - [minMax.ts](#minMaxts)
-  - [range.ts](#rangets)
-
+	- [chunk.ts](#chunkts)
+	- [isIterable.ts](#isIterablets)
+	- [minMax.ts](#minMaxts)
+	- [range.ts](#rangets)
 ## string
-
 ### capitalize.ts
-
 ```typescript
 // preference for .charAt() over array indexing [] in case of empty string ""
 
@@ -52,10 +50,9 @@ export const capitalize2 = (str: string) =>
 
 export const uncapitalize = <T extends string>(str: T) =>
   `${str.charAt(0).toLowerCase()}${str.substring(1)}` as Uncapitalize<T>;
+
 ```
-
 ### randomString.ts
-
 ```typescript
 const CHARACTERS =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -66,10 +63,9 @@ export const randomString = (length: number, characters = CHARACTERS) =>
     crypto.getRandomValues(new Uint8Array(length)),
     (byte) => characters[byte % characters.length],
   ).join("");
+
 ```
-
 ### segment.ts
-
 ```typescript
 /**
  * Using Intl.Segmenter to segment a string into an array of substrings, either
@@ -108,16 +104,17 @@ export const segmentByWord = (
 
 // alternatively can use .reduce() to do so in single iteration
 // e.g. arr.reduce((acc, s) => (s.isWordLike ? [...acc, s.segment] : acc), [])
+
 ```
-
 ### truncateMiddle.ts
-
 ```typescript
 // use text-overflow: ellipsis in CSS if truncating text in the middle is not necessary
 
 export const truncateMiddle = (
   text: string,
   maxLength: number,
+  // may want to set default placeholder to "…" (unicode ellipsis character)
+  // instead of "..." (three dots)
   placeholder = "...",
 ) =>
   text.length > maxLength
@@ -125,25 +122,36 @@ export const truncateMiddle = (
       placeholder +
       text.slice(-Math.floor((maxLength - placeholder.length) / 2))
     : text;
+
 ```
-
 ## object
-
 ### isEmpty.ts
-
 ```typescript
 export const isEmpty = (value: unknown) => {
   if (value === null || value === undefined) return true;
-  if (Array.isArray(value)) return value.length === 0;
+  if (Array.isArray(value) || typeof value === "string")
+    return value.length === 0;
   if (value instanceof Map || value instanceof Set) return value.size === 0;
+  // must be last in case of Array, Map, Set
   if (typeof value === "object") return Object.entries(value).length === 0;
 
   return false;
 };
+
+// Using many nested ternaries rather than early return. Arguably less readable.
+export const isEmpty1 = (value: unknown) =>
+  value === null ||
+  value === undefined ||
+  (Array.isArray(value) || typeof value === "string"
+    ? value.length === 0
+    : value instanceof Map || value instanceof Set
+      ? value.size === 0
+      : typeof value === "object"
+        ? Object.entries(value).length === 0
+        : false);
+
 ```
-
 ### isPlainObject.ts
-
 ```typescript
 export function isPlainObject(obj: unknown) {
   if (typeof obj !== "object" || obj === null) return false;
@@ -155,10 +163,9 @@ export function isPlainObject(obj: unknown) {
     Object.getPrototypeOf(obj) === proto || Object.getPrototypeOf(obj) === null
   );
 }
+
 ```
-
 ### parseFormData.ts
-
 ```typescript
 export const parseFormData = (formData: FormData) =>
   Array.from(formData).reduce<
@@ -170,10 +177,9 @@ export const parseFormData = (formData: FormData) =>
     }
     return acc;
   }, {});
+
 ```
-
 ### parseUrlSearchParams.ts
-
 ```typescript
 export const parseUrlSearchParams = (urlSearchParams: URLSearchParams) =>
   Array.from(urlSearchParams).reduce<Record<string, string | string[]>>(
@@ -186,10 +192,9 @@ export const parseUrlSearchParams = (urlSearchParams: URLSearchParams) =>
     },
     {},
   );
+
 ```
-
 ### shallowEqual.ts
-
 ```typescript
 /**
  * Based on React's default implementation of shallowEqual
@@ -218,12 +223,10 @@ export const shallowEqual = <T extends Record<string, unknown>>(
     keys1.every((key) => Object.is(obj1[key], obj2[key]))
   );
 };
+
 ```
-
 ## number
-
 ### randomNum.ts
-
 ```typescript
 // random number between min and max (inclusive)
 export const randomNum = (min: number, max: number) =>
@@ -233,40 +236,70 @@ export const randomNum = (min: number, max: number) =>
       (Math.floor(max) - Math.ceil(min) + 1) +
       Math.ceil(min),
   );
+
 ```
-
-## misc
-
-### assertIsError.ts
-
+### relativeError.ts
 ```typescript
-export function assertIsError(e: unknown): asserts e is Error {
-  if (!(e instanceof Error)) {
-    throw new Error(
-      `Expected an Error but got ${e?.toString() ?? "unknown object without toString method"}`,
-      {
-        cause: e,
-      },
-    );
+export const relativeError = (actual: number, expected: number) =>
+  // if expected is 0, returns NaN
+  Math.abs((actual - expected) / expected);
+
+// for completeness, inlining the function `Math.abs(actual - expected)` is
+// probably clearer
+export const absoluteError = (actual: number, expected: number) =>
+  Math.abs(actual - expected);
+
+```
+## misc
+### assertIsError.ts
+```typescript
+export function assertIsError(error: unknown): asserts error is Error {
+  if (!(error instanceof Error)) {
+    throw new Error(`Expected an Error but got ${typeof error}`, {
+      cause: error,
+    });
   }
 }
+
 ```
-
 ### assertNever.ts
-
 ```typescript
-export default function assertNever(value: never, message?: string): never {
-  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-  throw new Error(message ? message : `Unexpected value: ${value}`, {
+export function assertNever(value: never, message?: string): never {
+  throw new Error(message ?? `Unexpected value: ${JSON.stringify(value)}`, {
     cause: value,
   });
 }
+
 ```
+### createRangeMapper.ts
+```typescript
+// start inclusive, end exclusive
+type Range = [start: number, end: number];
 
+export const createRangeMapper = <T extends PropertyKey>(
+  map: Record<T, Range>,
+) => {
+  return (value: number) => {
+    const entry = Object.entries<Range>(map).find(([, [start, end]], i) =>
+      i === 0
+        ? // inclusive of start and end on first entry (e.g. on A: [0, 100], 100 would be an A)
+          value >= start && value <= end
+        : start <= value && value < end,
+    );
+
+    if (!entry) {
+      throw new Error(`Invalid value with no corresponding range: ${value}`, {
+        cause: { map, value },
+      });
+    }
+
+    return entry[0] as T;
+  };
+};
+
+```
 ## function
-
 ### debounce.ts
-
 ```typescript
 export function debounce<T extends (...args: Parameters<T>) => ReturnType<T>>(
   callback: T,
@@ -288,17 +321,15 @@ export function debounce<T extends (...args: Parameters<T>) => ReturnType<T>>(
     if (callNow) callback.apply(this, args);
   };
 }
+
 ```
-
 ### sleep.ts
-
 ```typescript
 export const sleep = (ms?: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
+
 ```
-
 ### throttle.ts
-
 ```typescript
 export function throttle<T extends (...args: Parameters<T>) => ReturnType<T>>(
   callback: T,
@@ -315,13 +346,21 @@ export function throttle<T extends (...args: Parameters<T>) => ReturnType<T>>(
     }
   };
 }
+
 ```
-
 ## formatting
-
 ### formatBytes.ts
-
 ```typescript
+/**
+ * @file Functions to format bytes into human-readable strings using
+ * Intl.NumberFormat. A lot of implementations use some kind of number division
+ * and modulo to determine the appropriate unit, but this is more flexible
+ * depending on locale.
+ *
+ * Since each unit multiple is considered a separate unit, we have to manually
+ * determine the appropriate unit and corresponding value, otherwise we get
+ * formatting such as "1 BB" instead of "1 GB". */
+
 /**
  * Per {@link https://tc39.es/ecma402/#table-sanctioned-single-unit-identifiers},
  * these are the valid byte units supported by the `Intl.NumberFormat` API.
@@ -335,31 +374,56 @@ const UNITS = [
   "petabyte",
 ];
 
-/**
- * Since each unit multiple is considered a separate unit, we have to manually
- * determine the appropriate unit and corresponding value, otherwise we get
- * formatting such as "1 BB" instead of "1 GB".
- */
+// Alternatively, though less succinct/descriptive
+// const UNITS = ["", "kilo", "mega", "giga", "tera", "peta"].map(
+//   (prefix) => `${prefix}byte`,
+// );
+
+// SI units, where 1 gigabyte = 1000 megabytes
 export const formatBytes = (
   bytes: number,
   ...[locales, options]: ConstructorParameters<Intl.NumberFormatConstructor>
-) => {
-  // negative bytes really doesn't make sense
-  if (!bytes || bytes <= 0) return `0 ${UNITS[0]}s`;
+): string => {
+  // Negative bytes doesn't really make sense
+  if (Math.sign(bytes) === -1) return `-${formatBytes(Math.abs(bytes))}`;
 
-  // note, this is in base 10 and not base 2, so gigabyte = 1000 megabytes
-  const exponent = Math.min(
-    Math.floor(Math.log10(bytes) / 3),
-    UNITS.length - 1,
-  );
-
-  // for binary units, where 1 gigabyte = 1024 megabytes
-  // const exponent = Math.min(Math.floor(Math.log2(bytes) / 10), units.length - 1);
+  const exponent =
+    // 0 becomes -Infinity, nonfinite numbers cannot index UNITS
+    bytes !== 0 && Number.isFinite(bytes)
+      ? Math.min(
+          Math.floor(Math.log10(bytes) / 3),
+          UNITS.length - 1, // set to max unit if exponent exceeds largest unit (i.e. petabyte)
+        )
+      : 0; // defaults to unit "byte"
 
   const value = bytes / 1000 ** exponent;
 
-  // for binary units
-  // const value = bytes / 1024 ** exponent;
+  // Initializes new NumberFormat instance every time, may want to use one
+  // instance if using frequently for caching
+  return new Intl.NumberFormat(locales, {
+    style: "unit",
+    unit: UNITS[exponent],
+    ...options,
+  }).format(value);
+};
+
+/**
+ * Alternatively, using Binary rather than SI units, where 1 gigabyte = 1024
+ * megabytes. Technically, should be using kibibytes, mebibytes, etc., but these
+ * are not supported units in ECMA-402.
+ */
+export const formatBytesBinary = (
+  bytes: number,
+  ...[locales, options]: ConstructorParameters<Intl.NumberFormatConstructor>
+): string => {
+  if (Math.sign(bytes) === -1) return `-${formatBytesBinary(Math.abs(bytes))}`;
+
+  const exponent =
+    Number.isFinite(bytes) && bytes !== 0
+      ? Math.min(Math.floor(Math.log2(bytes) / 10), UNITS.length - 1)
+      : 0;
+
+  const value = bytes / 1024 ** exponent;
 
   return new Intl.NumberFormat(locales, {
     style: "unit",
@@ -367,19 +431,17 @@ export const formatBytes = (
     ...options,
   }).format(value);
 };
+
 ```
-
 ### formatNumber.ts
-
 ```typescript
 export const formatNumber = (
   number: unknown,
   ...params: ConstructorParameters<Intl.NumberFormatConstructor>
 ) => new Intl.NumberFormat(...params).format(Number(number));
+
 ```
-
 ### formatOrdinal.ts
-
 ```typescript
 // only true for English, becomes significantly more complex for other languages
 const SUFFIXES = {
@@ -388,7 +450,7 @@ const SUFFIXES = {
   two: "nd",
   few: "rd",
   other: "th",
-  many: "th",
+  many: "th", // should never occur in English, included for TypeScript
 } satisfies Record<Intl.LDMLPluralRule, string>;
 
 export const formatOrdinal = (
@@ -405,22 +467,19 @@ export const formatOrdinal = (
 
   return `${num}${suffix}`;
 };
+
 ```
-
 ### uri.ts
-
 ```typescript
 export const uri = (
   template: TemplateStringsArray,
   // valid values for encodeURIComponent
   ...values: (string | number | boolean)[]
 ) => String.raw({ raw: template }, ...values.map((v) => encodeURIComponent(v)));
+
 ```
-
 ## color
-
 ### color.ts
-
 ```typescript
 // no support for alpha channel/transparency
 type RGB = {
@@ -447,12 +506,10 @@ export const hexToRgb = (hex: string): RGB => {
 
 export const rgbToHex = ({ r, g, b }: RGB) =>
   `#${[r, g, b].map((x) => x.toString(16).padStart(2, "0")).join("")}`;
+
 ```
-
 ## array
-
 ### chunk.ts
-
 ```typescript
 // immutable approach
 export const chunk = <T>(items: T[], size: number) =>
@@ -470,10 +527,28 @@ export const chunk1 = <T>(items: T[], size: number) => {
   }
   return result;
 };
+
 ```
+### isIterable.ts
+```typescript
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterable_protocol
 
+export const isIterable = (value: unknown): value is Iterable<unknown> =>
+  typeof value === "object" &&
+  value !== null &&
+  Symbol.iterator in value &&
+  typeof value[Symbol.iterator] === "function";
+
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Indexed_collections#working_with_array-like_objects
+
+export const isArrayLike = (value: unknown): value is ArrayLike<unknown> =>
+  typeof value === "object" &&
+  value !== null &&
+  "length" in value &&
+  typeof value.length === "number";
+
+```
 ### minMax.ts
-
 ```typescript
 // unlike [Math.min(), Math.max()], this function only iterates through the array once, more suitable for large arrays (and prevents stack overflow errors)
 export const minMax = (arr: number[]) =>
@@ -487,18 +562,29 @@ export const minMax = (arr: number[]) =>
     // can remove this default if you know the array will never be empty
     [Infinity, -Infinity],
   );
+
 ```
-
 ### range.ts
-
 ```typescript
 export const range = (start: number, end: number, step = 1) => {
   const length =
     Math.sign(step) === 1
       ? Math.max(Math.ceil((end - start + 1) / step), 0)
-      : // step can be negative, go backwards
+      : // if step is negative, go backwards
+        // alternatively, may be removed if not intending to use negative step
+        // and can just use .toReversed() when needed
         Math.max(Math.ceil((start - end + 1) / Math.abs(step)), 0);
+
+  /**
+   * Performance-wise, new Array().map() is significantly faster than
+   * Array.from(), but Array constructor is often discouraged due to weird
+   * behavior
+   *
+   * {@see https://google.github.io/styleguide/tsguide.html#array-constructor}
+   * {@see https://jsbench.me/lxlv8rn8kd}
+   */
 
   return Array.from({ length }, (_, index) => start + index * step);
 };
+
 ```
