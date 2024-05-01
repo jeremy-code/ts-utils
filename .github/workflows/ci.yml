@@ -7,8 +7,8 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  build_and_lint:
-    name: Build and Lint
+  build_and_test:
+    name: Build and Test
     runs-on: ubuntu-latest
 
     steps:
@@ -23,9 +23,13 @@ jobs:
         with:
           node-version-file: ".nvmrc"
           cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
         run: pnpm install
 
-      - name: Run unit tests
+      - name: Lint code
+        run: pnpm lint
+
+      - name: Run tests
         run: pnpm test

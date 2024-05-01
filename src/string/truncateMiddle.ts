@@ -7,8 +7,8 @@ export const truncateMiddle = (
   // instead of "..." (three dots)
   placeholder = "...",
 ) =>
-  text.length > maxLength
-    ? text.slice(0, Math.ceil((maxLength - placeholder.length) / 2)) +
-      placeholder +
-      text.slice(-Math.floor((maxLength - placeholder.length) / 2))
-    : text;
+  text.length > maxLength ?
+    text.slice(0, Math.ceil((maxLength - placeholder.length) / 2)) +
+    placeholder +
+    text.slice(-Math.floor((maxLength - placeholder.length) / 2))
+  : text;

@@ -2,7 +2,7 @@
 
 export const isIterable = (value: unknown): value is Iterable<unknown> =>
   typeof value === "object" &&
-  value !== null &&
+  value !== null && // typeof null === 'object'
   Symbol.iterator in value &&
   typeof value[Symbol.iterator] === "function";
 
@@ -10,6 +10,6 @@ export const isIterable = (value: unknown): value is Iterable<unknown> =>
 
 export const isArrayLike = (value: unknown): value is ArrayLike<unknown> =>
   typeof value === "object" &&
-  value !== null &&
+  value !== null && // typeof null === 'object'
   "length" in value &&
   typeof value.length === "number";

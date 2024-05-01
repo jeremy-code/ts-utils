@@ -14,10 +14,15 @@ describe("formatOrdinal function", () => {
     expect(formatOrdinal(101, "en")).toBe("101st");
     expect(formatOrdinal(111, "en")).toBe("111th");
     expect(formatOrdinal(121, "en")).toBe("121st");
+    expect(formatOrdinal(1_234_567_890, "en")).toBe("1234567890th"); // no locale string formatting
   });
 
   test("should handle edge cases", () => {
     expect(formatOrdinal(0, "en")).toBe("0th");
     expect(formatOrdinal(-1, "en")).toBe("-1st");
+    expect(formatOrdinal(-2, "en")).toBe("-2nd");
+    expect(formatOrdinal(NaN, "en")).toBe("NaNth");
+    expect(formatOrdinal(Infinity, "en")).toBe("Infinityth");
+    expect(formatOrdinal(-Infinity, "en")).toBe("-Infinityth");
   });
 });

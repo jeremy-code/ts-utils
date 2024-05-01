@@ -24,6 +24,7 @@
     /* Type Checking */
     "strict": true,
     "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
 
     /* Completeness */
     "skipLibCheck": true

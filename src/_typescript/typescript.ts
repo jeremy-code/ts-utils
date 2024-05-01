@@ -1,4 +1,7 @@
-// Anything that isn't an object
+/**
+ * Anything that isn't an object
+ * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#primitive_values}
+ */
 export type Primitive =
   | string
   | number
@@ -8,25 +11,32 @@ export type Primitive =
   | null
   | undefined;
 
-// alternatively, PropertyKey | bigint | boolean | null | undefined
+// Using an accumulator for tail call recursion optimization
+type Enumerate<N extends number, Acc extends number[] = []> =
+  Acc["length"] extends N ? Acc[number] : Enumerate<N, [...Acc, Acc["length"]]>;
 
-// using Acc for tail end recursion for performance
-type Enumerate<
-  N extends number,
-  Acc extends number[] = [],
-> = Acc["length"] extends N
-  ? Acc[number]
-  : Enumerate<N, [...Acc, Acc["length"]]>;
-
-// ideally, should be validated at runtime rather and just use number as type for compile-time
-export type Range<F extends number, T extends number> = Exclude<
-  Enumerate<T>,
-  Enumerate<F>
+/**
+ * Ideally, type should be number, and validated at runtime, but may be useful in niche cases
+ *
+ * @example Percentage
+ * type Percentage = Range<1, 101>; // 1-100
+ */
+export type Range<From extends number, To extends number> = Exclude<
+  Enumerate<To>,
+  Enumerate<From>
 >;
 
-// can be used to get types such as 1-100
-// type Percentage = Range<1, 101>;
+export type NumericRange = [From: number, To: number];
 
+/**
+ * Can be used to create a number of fixed length, similar to {@link Range}
+ *
+ * @example 2-digit number
+ * ```ts
+ * type ParseInt<T> = T extends `${infer N extends number}` ? N : never;
+ * type TwoDigitNumber = ParseInt<`${Digit}` | `${Exclude<Digit, 0>}${Digit}`>;
+ * ```
+ */
 type Digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
 // prettier-ignore
@@ -34,34 +44,41 @@ type CapitalLetter = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' |
 
 type Letter = CapitalLetter | Lowercase<CapitalLetter>;
 
-// does not work with unicode characters, punctuations, empty string, or spaces
+// Note: does not include special characters, e.g., punctuation, whitespace, etc.
 export type Char = Letter | Digit;
 
-// eslint-disable-next-line @typescript-eslint/ban-types
+/**
+ * @see https://www.totaltypescript.com/concepts/the-prettify-helper
+ *
+ * @example Alternatively, can be used without {}
+ * type Prettify<T> = { [K in keyof T]: T[K] } & unknown;
+ */
+// eslint-disable-next-line @typescript-eslint/ban-types -- {} or unknown is necessary for compiler
 export type Prettify<T> = { [K in keyof T]: T[K] } & {};
-// alternatively, without {}, type Prettify<T> = { [K in keyof T]: T[K] } & unknown;
 
-// depending on use case, you may want key: string or key: string | number
 export interface Recursive<T> {
   [key: PropertyKey]: T | Recursive<T>;
 }
 
+// Opposite of NonNullable<T> global type
 export type Nullable<T> = T | null | undefined;
 
-// alternatively, use A[number] or A[keyof A]
+/**
+ * Alternatively, use A[number] or A[keyof A]
+ *
+ * @example Weekdays
+ * ```ts
+ * const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] as const;
+ * type Weekday = ArrayElement<typeof weekdays>;
+ * ```
+ */
 export type ArrayElement<A extends readonly unknown[]> =
   A extends readonly (infer T)[] ? T : never;
 
-// note can be used to get something like this
-// const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] as const;
-// type Weekday = ArrayElement<typeof weekdays>
-
 export type IterableElement<I> =
-  I extends Iterable<infer T>
-    ? T
-    : I extends AsyncIterable<infer T>
-      ? T
-      : never;
+  I extends Iterable<infer T> ? T
+  : I extends AsyncIterable<infer T> ? T
+  : never;
 
 export type Class<T, Args extends unknown[]> = {
   prototype: Pick<T, keyof T>;

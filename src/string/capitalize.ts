@@ -1,4 +1,6 @@
-// preference for .charAt() over array indexing [] in case of empty string ""
+// Equivalent to utility types Capitalize<T> and Uncapitalize<T>
+
+// Preference for .charAt() over array indexing [] in case of empty string ""
 
 export const capitalize = <T extends string>(str: T) =>
   `${str.charAt(0).toUpperCase()}${str.substring(1)}` as Capitalize<T>;

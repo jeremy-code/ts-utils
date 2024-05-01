@@ -30,8 +30,7 @@ export const segmentByWord = (
       ...options,
     }).segment(input),
   )
+    // alternatively can use .reduce() to do so in single iteration
+    // e.g. arr.reduce((acc, s) => (s.isWordLike ? [...acc, s.segment] : acc), [])
     .filter((s) => s.isWordLike)
     .map((s) => s.segment);
-
-// alternatively can use .reduce() to do so in single iteration
-// e.g. arr.reduce((acc, s) => (s.isWordLike ? [...acc, s.segment] : acc), [])

@@ -1,4 +1,9 @@
 /**
+ * Compare two objects one level deep (shallow comparison / Object.is)
+ *
+ * Roughly equivalent to npm package `shallowequal` which is the 1849th most
+ * popular package with 5M weekly downloads
+ *
  * Based on React's default implementation of shallowEqual
  * {@see https://github.com/facebook/react/blob/main/packages/shared/shallowEqual.js }
  */

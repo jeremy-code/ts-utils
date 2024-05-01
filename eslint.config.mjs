@@ -23,9 +23,6 @@ export default tseslint.config(
   {
     files: ["**/*.{test}.{js,jsx,ts,tsx}"],
     ...jest.configs["flat/recommended"],
-    rules: {
-      ...jest.configs["flat/recommended"].rules,
-    },
   },
   {
     files: ["*.{js,jsx,cjs,mjs}"],

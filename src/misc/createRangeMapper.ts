@@ -6,10 +6,10 @@ export const createRangeMapper = <T extends PropertyKey>(
 ) => {
   return (value: number) => {
     const entry = Object.entries<Range>(map).find(([, [start, end]], i) =>
-      i === 0
-        ? // inclusive of start and end on first entry (e.g. on A: [0, 100], 100 would be an A)
-          value >= start && value <= end
-        : start <= value && value < end,
+      i === 0 ?
+        // inclusive of start and end on first entry (e.g. on A: [0, 100], 100 would be an A)
+        value >= start && value <= end
+      : start <= value && value < end,
     );
 
     if (!entry) {

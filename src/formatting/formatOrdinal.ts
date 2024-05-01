@@ -1,4 +1,4 @@
-// only true for English, becomes significantly more complex for other languages
+// Only true for English, becomes significantly more complex for other languages
 const SUFFIXES = {
   zero: "th",
   one: "st",

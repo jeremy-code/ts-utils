@@ -36,12 +36,12 @@ export const formatBytes = (
 
   const exponent =
     // 0 becomes -Infinity, nonfinite numbers cannot index UNITS
-    bytes !== 0 && Number.isFinite(bytes)
-      ? Math.min(
-          Math.floor(Math.log10(bytes) / 3),
-          UNITS.length - 1, // set to max unit if exponent exceeds largest unit (i.e. petabyte)
-        )
-      : 0; // defaults to unit "byte"
+    bytes !== 0 && Number.isFinite(bytes) ?
+      Math.min(
+        Math.floor(Math.log10(bytes) / 3),
+        UNITS.length - 1, // set to max unit if exponent exceeds largest unit (i.e. petabyte)
+      )
+    : 0; // defaults to unit "byte"
 
   const value = bytes / 1000 ** exponent;
 
@@ -66,9 +66,9 @@ export const formatBytesBinary = (
   if (Math.sign(bytes) === -1) return `-${formatBytesBinary(Math.abs(bytes))}`;
 
   const exponent =
-    Number.isFinite(bytes) && bytes !== 0
-      ? Math.min(Math.floor(Math.log2(bytes) / 10), UNITS.length - 1)
-      : 0;
+    Number.isFinite(bytes) && bytes !== 0 ?
+      Math.min(Math.floor(Math.log2(bytes) / 10), UNITS.length - 1)
+    : 0;
 
   const value = bytes / 1024 ** exponent;
 

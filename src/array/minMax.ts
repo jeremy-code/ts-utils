@@ -1,4 +1,6 @@
-// unlike [Math.min(), Math.max()], this function only iterates through the array once, more suitable for large arrays (and prevents stack overflow errors)
+// unlike [Math.min(), Math.max()], this function only iterates through the
+// array once, more suitable for large arrays (and prevents stack overflow
+// errors)
 export const minMax = (arr: number[]) =>
   arr.reduce<[number, number]>(
     (acc, item) => {
