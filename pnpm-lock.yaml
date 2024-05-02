@@ -7,6 +7,9 @@ settings:
 importers:
   .:
     devDependencies:
+      "@ianvs/prettier-plugin-sort-imports":
+        specifier: ^4.2.1
+        version: 4.2.1(prettier@3.2.5)
       "@types/jest":
         specifier: ^29.5.12
         version: 29.5.12
@@ -16,9 +19,15 @@ importers:
       eslint:
         specifier: ^8.57.0
         version: 8.57.0
+      eslint-config-prettier:
+        specifier: ^9.1.0
+        version: 9.1.0(eslint@8.57.0)
       eslint-plugin-jest:
         specifier: ^28.3.0
         version: 28.3.0(@typescript-eslint/eslint-plugin@7.8.0(@typescript-eslint/parser@7.8.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0)(jest@29.7.0(@types/node@20.12.8))(typescript@5.4.5)
+      eslint-plugin-markdown:
+        specifier: ^4.0.1
+        version: 4.0.1(eslint@8.57.0)
       globals:
         specifier: ^15.1.0
         version: 15.1.0
@@ -590,6 +599,18 @@ packages:
         integrity: sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==,
       }
 
+  "@ianvs/prettier-plugin-sort-imports@4.2.1":
+    resolution:
+      {
+        integrity: sha512-NKN1LVFWUDGDGr3vt+6Ey3qPeN/163uR1pOPAlkWpgvAqgxQ6kSdUf1F0it8aHUtKRUzEGcK38Wxd07O61d7+Q==,
+      }
+    peerDependencies:
+      "@vue/compiler-sfc": 2.7.x || 3.x
+      prettier: 2 || 3
+    peerDependenciesMeta:
+      "@vue/compiler-sfc":
+        optional: true
+
   "@istanbuljs/load-nyc-config@1.1.0":
     resolution:
       {
@@ -844,6 +865,12 @@ packages:
         integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==,
       }
 
+  "@types/mdast@3.0.15":
+    resolution:
+      {
+        integrity: sha512-LnwD+mUEfxWMa1QpDraczIn6k0Ee3SMicuYSSzS6ZYl2gKS09EClnJYGd8Du6rfc5r/GZEk5o1mRb8TaTj03sQ==,
+      }
+
   "@types/node@20.12.8":
     resolution:
       {
@@ -860,6 +887,12 @@ packages:
     resolution:
       {
         integrity: sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw==,
+      }
+
+  "@types/unist@2.0.10":
+    resolution:
+      {
+        integrity: sha512-IfYcSBWE3hLpBg8+X2SEa8LVkJdJEkT2Ese2aaLs3ptGdVtABxndrMaxuFlQ1qdFf9Q5rDvDpxI3WwgvKFAsQA==,
       }
 
   "@types/yargs-parser@21.0.3":
@@ -1255,6 +1288,24 @@ packages:
       }
     engines: { node: ">=10" }
 
+  character-entities-legacy@1.1.4:
+    resolution:
+      {
+        integrity: sha512-3Xnr+7ZFS1uxeiUDvV02wQ+QDbc55o97tIV5zHScSPJpcLm/r0DFPcoY3tYRp+VZukxuMeKgXYmsXQHO05zQeA==,
+      }
+
+  character-entities@1.2.4:
+    resolution:
+      {
+        integrity: sha512-iBMyeEHxfVnIakwOuDXpVkc54HijNgCyQB2w0VfGQThle6NXn50zU6V/u+LDhxHcDUPojn6Kpga3PTAD8W1bQw==,
+      }
+
+  character-reference-invalid@1.1.4:
+    resolution:
+      {
+        integrity: sha512-mKKUkUbhPpQlCOfIuZkvSEgktjPFIsZKRRbC6KWVEMvlzblj3i3asQv5ODsrwt0N3pHAEvjP8KTQPHkp0+6jOg==,
+      }
+
   ci-info@3.9.0:
     resolution:
       {
@@ -1498,6 +1549,15 @@ packages:
       }
     engines: { node: ">=10" }
 
+  eslint-config-prettier@9.1.0:
+    resolution:
+      {
+        integrity: sha512-NSWl5BFQWEPi1j4TjVNItzYV7dZXZ+wP6I6ZhrBGpChQhZRUaElihE9uRRkcbRnNb76UMKDF3r+WTmNcGPKsqw==,
+      }
+    hasBin: true
+    peerDependencies:
+      eslint: ">=7.0.0"
+
   eslint-plugin-jest@28.3.0:
     resolution:
       {
@@ -1513,6 +1573,15 @@ packages:
         optional: true
       jest:
         optional: true
+
+  eslint-plugin-markdown@4.0.1:
+    resolution:
+      {
+        integrity: sha512-5/MnGvYU0i8MbHH5cg8S+Vl3DL+bqRNYshk1xUO86DilNBaxtTkhH+5FD0/yO03AmlI6+lfNFdk2yOw72EPzpA==,
+      }
+    engines: { node: ^18.18.0 || ^20.9.0 || >=21.1.0 }
+    peerDependencies:
+      eslint: ">=8"
 
   eslint-scope@7.2.2:
     resolution:
@@ -1909,6 +1978,18 @@ packages:
         integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==,
       }
 
+  is-alphabetical@1.0.4:
+    resolution:
+      {
+        integrity: sha512-DwzsA04LQ10FHTZuL0/grVDk4rFoVH1pjAToYwBrHSxcrBIGQuXrQMtD5U1b0U2XVgKZCTLLP8u2Qxqhy3l2Vg==,
+      }
+
+  is-alphanumerical@1.0.4:
+    resolution:
+      {
+        integrity: sha512-UzoZUr+XfVz3t3v4KyGEniVL9BDRoQtY7tOyrRybkVNjDFWyo1yhXNGrrBTQxp3ib9BLAWs7k2YKBQsFRkZG9A==,
+      }
+
   is-arrayish@0.2.1:
     resolution:
       {
@@ -1919,6 +2000,12 @@ packages:
     resolution:
       {
         integrity: sha512-hHrIjvZsftOsvKSn2TRYl63zvxsgE0K+0mYMoH6gD4omR5IWB2KynivBQczo3+wF1cCkjzvptnI9Q0sPU66ilw==,
+      }
+
+  is-decimal@1.0.4:
+    resolution:
+      {
+        integrity: sha512-RGdriMmQQvZ2aqaQq3awNA6dCGtKpiDFcOzrTWrDAT2MiWrKQVPmxLGHl7Y2nNu6led0kEyoX0enY0qXYsv9zw==,
       }
 
   is-extglob@2.1.1:
@@ -1962,6 +2049,12 @@ packages:
         integrity: sha512-xelSayHH36ZgE7ZWhli7pW34hNbNl8Ojv5KVmkJD4hBdD3th8Tfk9vYasLM+mXWOZhFkgZfxhLSnrwRr4elSSg==,
       }
     engines: { node: ">=0.10.0" }
+
+  is-hexadecimal@1.0.4:
+    resolution:
+      {
+        integrity: sha512-gyPJuv83bHMpocVYoqof5VDiZveEoGoFL8m3BXNb2VW8Xs+rz9kqO8LOQ5DH6EsuvilT1ApazU0pyl+ytbPtlw==,
+      }
 
   is-number@7.0.0:
     resolution:
@@ -2426,6 +2519,18 @@ packages:
         integrity: sha512-JmqCvUhmt43madlpFzG4BQzG2Z3m6tvQDNKdClZnO3VbIudJYmxsT0FNJMeiB2+JTSlTQTSbU8QdesVmwJcmLg==,
       }
 
+  mdast-util-from-markdown@0.8.5:
+    resolution:
+      {
+        integrity: sha512-2hkTXtYYnr+NubD/g6KGBS/0mFmBcifAsI0yIWRiRo0PjVs6SSOSOdtzbp6kSGnShDN6G5aWZpKQ2lWRy27mWQ==,
+      }
+
+  mdast-util-to-string@2.0.0:
+    resolution:
+      {
+        integrity: sha512-AW4DRS3QbBayY/jJmD8437V1Gombjf8RSOUCMFBuo5iHi58AGEgVCKQ+ezHkZZDpAQS75hcBMpLqjpJTjtUL7w==,
+      }
+
   merge-stream@2.0.0:
     resolution:
       {
@@ -2438,6 +2543,12 @@ packages:
         integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==,
       }
     engines: { node: ">= 8" }
+
+  micromark@2.11.4:
+    resolution:
+      {
+        integrity: sha512-+WoovN/ppKolQOFIAajxi7Lu9kInbPxFuTBVEavFcL8eAfVstoc5MocPmqBeAdBOJV00uaVjegzH4+MA0DN/uA==,
+      }
 
   micromatch@4.0.5:
     resolution:
@@ -2593,6 +2704,12 @@ packages:
         integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==,
       }
     engines: { node: ">=6" }
+
+  parse-entities@2.0.0:
+    resolution:
+      {
+        integrity: sha512-kkywGpCcRYhqQIchaWqZ875wzpS/bMKhz5HnN3p7wveJTkTtyAB/AlnS0f8DFSqYW1T82t6yEAkEcB+A1I3MbQ==,
+      }
 
   parse-json@5.2.0:
     resolution:
@@ -3134,6 +3251,12 @@ packages:
         integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==,
       }
 
+  unist-util-stringify-position@2.0.3:
+    resolution:
+      {
+        integrity: sha512-3faScn5I+hy9VleOq/qNbAd6pAx7iH5jYBMS9I1HgQVijz/4mv5Bvw5iw1sC/90CODiKo81G/ps8AJrISn687g==,
+      }
+
   update-browserslist-db@1.0.13:
     resolution:
       {
@@ -3561,6 +3684,18 @@ snapshots:
 
   "@humanwhocodes/object-schema@2.0.3": {}
 
+  "@ianvs/prettier-plugin-sort-imports@4.2.1(prettier@3.2.5)":
+    dependencies:
+      "@babel/core": 7.24.4
+      "@babel/generator": 7.24.4
+      "@babel/parser": 7.24.4
+      "@babel/traverse": 7.24.1
+      "@babel/types": 7.24.0
+      prettier: 3.2.5
+      semver: 7.6.0
+    transitivePeerDependencies:
+      - supports-color
+
   "@istanbuljs/load-nyc-config@1.1.0":
     dependencies:
       camelcase: 5.3.1
@@ -3814,6 +3949,10 @@ snapshots:
 
   "@types/json-schema@7.0.15": {}
 
+  "@types/mdast@3.0.15":
+    dependencies:
+      "@types/unist": 2.0.10
+
   "@types/node@20.12.8":
     dependencies:
       undici-types: 5.26.5
@@ -3821,6 +3960,8 @@ snapshots:
   "@types/semver@7.5.8": {}
 
   "@types/stack-utils@2.0.3": {}
+
+  "@types/unist@2.0.10": {}
 
   "@types/yargs-parser@21.0.3": {}
 
@@ -4112,6 +4253,12 @@ snapshots:
 
   char-regex@1.0.2: {}
 
+  character-entities-legacy@1.1.4: {}
+
+  character-entities@1.2.4: {}
+
+  character-reference-invalid@1.1.4: {}
+
   ci-info@3.9.0: {}
 
   cjs-module-lexer@1.2.3: {}
@@ -4244,6 +4391,10 @@ snapshots:
 
   escape-string-regexp@4.0.0: {}
 
+  eslint-config-prettier@9.1.0(eslint@8.57.0):
+    dependencies:
+      eslint: 8.57.0
+
   eslint-plugin-jest@28.3.0(@typescript-eslint/eslint-plugin@7.8.0(@typescript-eslint/parser@7.8.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0)(jest@29.7.0(@types/node@20.12.8))(typescript@5.4.5):
     dependencies:
       "@typescript-eslint/utils": 6.21.0(eslint@8.57.0)(typescript@5.4.5)
@@ -4254,6 +4405,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
       - typescript
+
+  eslint-plugin-markdown@4.0.1(eslint@8.57.0):
+    dependencies:
+      eslint: 8.57.0
+      mdast-util-from-markdown: 0.8.5
+    transitivePeerDependencies:
+      - supports-color
 
   eslint-scope@7.2.2:
     dependencies:
@@ -4507,11 +4665,20 @@ snapshots:
 
   inherits@2.0.4: {}
 
+  is-alphabetical@1.0.4: {}
+
+  is-alphanumerical@1.0.4:
+    dependencies:
+      is-alphabetical: 1.0.4
+      is-decimal: 1.0.4
+
   is-arrayish@0.2.1: {}
 
   is-core-module@2.13.1:
     dependencies:
       hasown: 2.0.2
+
+  is-decimal@1.0.4: {}
 
   is-extglob@2.1.1: {}
 
@@ -4528,6 +4695,8 @@ snapshots:
   is-glob@4.0.3:
     dependencies:
       is-extglob: 2.1.1
+
+  is-hexadecimal@1.0.4: {}
 
   is-number@7.0.0: {}
 
@@ -4990,9 +5159,28 @@ snapshots:
     dependencies:
       tmpl: 1.0.5
 
+  mdast-util-from-markdown@0.8.5:
+    dependencies:
+      "@types/mdast": 3.0.15
+      mdast-util-to-string: 2.0.0
+      micromark: 2.11.4
+      parse-entities: 2.0.0
+      unist-util-stringify-position: 2.0.3
+    transitivePeerDependencies:
+      - supports-color
+
+  mdast-util-to-string@2.0.0: {}
+
   merge-stream@2.0.0: {}
 
   merge2@1.4.1: {}
+
+  micromark@2.11.4:
+    dependencies:
+      debug: 4.3.4
+      parse-entities: 2.0.0
+    transitivePeerDependencies:
+      - supports-color
 
   micromatch@4.0.5:
     dependencies:
@@ -5075,6 +5263,15 @@ snapshots:
   parent-module@1.0.1:
     dependencies:
       callsites: 3.1.0
+
+  parse-entities@2.0.0:
+    dependencies:
+      character-entities: 1.2.4
+      character-entities-legacy: 1.1.4
+      character-reference-invalid: 1.1.4
+      is-alphanumerical: 1.0.4
+      is-decimal: 1.0.4
+      is-hexadecimal: 1.0.4
 
   parse-json@5.2.0:
     dependencies:
@@ -5327,6 +5524,10 @@ snapshots:
   typescript@5.4.5: {}
 
   undici-types@5.26.5: {}
+
+  unist-util-stringify-position@2.0.3:
+    dependencies:
+      "@types/unist": 2.0.10
 
   update-browserslist-db@1.0.13(browserslist@4.23.0):
     dependencies:

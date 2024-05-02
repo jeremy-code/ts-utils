@@ -1,6 +1,6 @@
+import type { Dirent } from "node:fs";
 import fs, { readdir } from "node:fs/promises";
 import { join, relative } from "node:path";
-import type { Dirent } from "node:fs";
 
 // Markdown helpers
 const link = (text: string, href: string) => `[${text}](${href})`;

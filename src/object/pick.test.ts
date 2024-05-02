@@ -1,4 +1,4 @@
-import { pick, omit, omit1 } from "./pick";
+import { omit, omit1, pick } from "./pick";
 
 describe("pick", () => {
   test("should pick specified properties from an object", () => {

@@ -1,31 +1,30 @@
 import eslint from "@eslint/js";
-import tseslint from "typescript-eslint";
-import globals from "globals";
-
-// plugins
+import prettier from "eslint-config-prettier";
 import jest from "eslint-plugin-jest";
+import markdown from "eslint-plugin-markdown";
+import globals from "globals";
+import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
+  ...markdown.configs.recommended,
   {
     languageOptions: {
       parserOptions: {
         project: true,
         tsconfigRootDir: import.meta.dirname,
       },
-      globals: {
-        ...globals.node,
-        ...globals.browser,
-      },
+      globals: { ...globals.node, ...globals.browser },
     },
   },
   {
-    files: ["**/*.{test}.{js,jsx,ts,tsx}"],
+    files: ["**/*.test.?(c|m){js,ts}"],
     ...jest.configs["flat/recommended"],
   },
   {
-    files: ["*.{js,jsx,cjs,mjs}"],
+    files: ["**/*.?(c|m)js"],
     ...tseslint.configs.disableTypeChecked,
   },
+  prettier,
 );

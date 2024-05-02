@@ -1,4 +1,4 @@
-import { isIterable, isArrayLike } from "./isIterable";
+import { isArrayLike, isIterable } from "./isIterable";
 
 describe("isIterable", () => {
   it("should return true for default iterable objects", () => {

@@ -1,4 +1,4 @@
-import { relativeError, absoluteError } from "./relativeError";
+import { absoluteError, relativeError } from "./relativeError";
 
 test("relativeError", () => {
   expect(relativeError(1, 2)).toBe(0.5);

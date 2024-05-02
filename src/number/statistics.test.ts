@@ -1,4 +1,4 @@
-import { mean, median, mode, variance, standardDeviation } from "./statistics";
+import { mean, median, mode, standardDeviation, variance } from "./statistics";
 
 describe("Statistical Functions Tests", () => {
   // Tests for mean
