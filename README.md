@@ -13,14 +13,17 @@
   - [jsonStringifyMap.ts](#jsonStringifyMapts)
   - [parseFormData.ts](#parseFormDatats)
   - [parseUrlSearchParams.ts](#parseUrlSearchParamsts)
+  - [pick.ts](#pickts)
   - [shallowEqual.ts](#shallowEqualts)
 - [number](#number)
   - [randomNum.ts](#randomNumts)
   - [relativeError.ts](#relativeErrorts)
+  - [statistics.ts](#statisticsts)
 - [misc](#misc)
   - [assertIsError.ts](#assertIsErrorts)
   - [assertNever.ts](#assertNeverts)
   - [createRangeMapper.ts](#createRangeMapperts)
+  - [store.ts](#storets)
 - [function](#function)
   - [debounce.ts](#debouncets)
   - [sleep.ts](#sleepts)
@@ -281,6 +284,47 @@ export const parseUrlSearchParams = (urlSearchParams: URLSearchParams) =>
   );
 ```
 
+### pick.ts
+
+```typescript
+// equivalent to pick utility type in TypeScript and lodash.pick
+
+export const pick = <T extends object, K extends keyof T>(
+  obj: T,
+  keys: readonly K[],
+): Pick<T, K> =>
+  Object.fromEntries(keys.map((key) => [key, obj[key]])) as Pick<T, K>;
+
+// casting to Pick<T, K> is necessary because Object.fromEntries returns { [k: string]: T; }
+// so as long as keys are not symbols, this should be safe
+//
+// omit is not as common as pick, hence here for completeness
+//
+// mutable approach, imo more readable may want to change type from { [key:
+// string]: unknown } to something else depending on use case
+export function omit<T extends { [key: string]: unknown }, K extends keyof T>(
+  object: T,
+  keys: K[],
+): Omit<T, K> {
+  const omitted: { [key: string]: unknown } = {};
+  Object.keys(object).forEach((key) => {
+    if (!keys.includes(key as K)) {
+      omitted[key] = object[key];
+    }
+  });
+  return omitted as Omit<T, K>;
+}
+
+// immutable approach, chaining Object.entries and Object.fromEntries
+export const omit1 = <T extends { [key: string]: unknown }, K extends keyof T>(
+  object: T,
+  keys: K[],
+): Omit<T, K> =>
+  Object.fromEntries(
+    Object.entries(object).filter(([key]) => !keys.includes(key as K)),
+  ) as Omit<T, K>;
+```
+
 ### shallowEqual.ts
 
 ```typescript
@@ -346,6 +390,80 @@ export const absoluteError = (actual: number, expected: number) =>
   Math.abs(actual - expected);
 ```
 
+### statistics.ts
+
+```typescript
+/**
+ * @file The basic statistics functions for numbers, expanding on what the Math
+ * object provides. Realistically, you shouldn't need ALL of these functions,
+ * but they are included for completeness. You likely want to use d3-array or
+ * similar library for more complicated statistics.
+ */
+
+// min = Math.min
+// max = Math.max
+// range = Math.max - Math.min
+
+// May want to extract the sum reduce() to its own function
+export const mean = (...values: number[]) =>
+  values.length === 0 ?
+    undefined // matches standard for array functions
+  : values.reduce((acc, value) => acc + value, 0) / values.length;
+
+export const median = (...values: number[]) => {
+  if (values.length === 0) return undefined;
+
+  // .sorted is standard ES2023, using .sort() which mutates array is also fine
+  const sorted = values.toSorted((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+
+  return sorted.length % 2 !== 0 ?
+      sorted[mid]
+      // should never be undefined, for noUncheckedIndexedAccess
+    : ((sorted[mid - 1] ?? 0) + (sorted[mid] ?? 0)) / 2;
+};
+
+export const mode = (...values: number[]) => {
+  if (values.length === 0) return undefined;
+
+  const counts = values.reduce(
+    (acc, v) => acc.set(v, (acc.get(v) || 0) + 1),
+    new Map<number, number>(),
+  );
+  const maxCount = Math.max(...counts.values());
+
+  return Array.from(counts).reduce<number[]>(
+    (acc, [value, count]) => (count === maxCount ? [...acc, value] : acc),
+    [],
+  );
+  // alternatively, chain filter() and map() instead of reduce() for readability
+  // .filter(([, count]) => count === maxCount).map(([value]) => value);
+
+  // alternatively, use .find() if only want the first element with the highest
+  // count
+};
+
+export const variance = (...values: number[]) => {
+  if (values.length === 0) return undefined;
+
+  const mean = values.reduce((acc, value) => acc + value, 0) / values.length;
+  return (
+    values.reduce((acc, value) => acc + (value - mean) ** 2, 0) / values.length
+  );
+};
+
+// could use variance() for this calculation to simplify
+export const standardDeviation = (...values: number[]) => {
+  if (values.length === 0) return undefined;
+
+  const mean = values.reduce((acc, value) => acc + value, 0) / values.length;
+  const variance =
+    values.reduce((acc, value) => acc + (value - mean) ** 2, 0) / values.length;
+
+  return Math.sqrt(variance);
+};
+```
+
 ## misc
 
 ### assertIsError.ts
@@ -396,6 +514,43 @@ export const createRangeMapper = <T extends PropertyKey>(
     return entry[0] as T;
   };
 };
+```
+
+### store.ts
+
+```typescript
+/**
+ * Intended for use in React with useSyncExternalStore(). For more complex use
+ * cases, see a library like Zustand.
+ *
+ * A start for a simple store implementation. Notably, it wouldn't actually work
+ * by itself. Since the state is mutated instead of replaced, React would never
+ * re-render, since it passes Object.is equality.
+ */
+
+export function createStore<S>(initialState: S | (() => S)) {
+  let state =
+    typeof initialState === "function" ?
+      (initialState as () => S)()
+    : initialState;
+  const listeners = new Set<() => void>();
+
+  return {
+    getSnapshot: () => state,
+    subscribe: (onStoreChange: () => void) => {
+      listeners.add(onStoreChange);
+
+      return () => listeners.delete(onStoreChange);
+    },
+    update: (newState: Partial<S>) => {
+      state = { ...state, ...newState };
+      listeners.forEach((listener) => listener());
+    },
+  };
+}
+
+// would have to initialize somewhere
+export const store = createStore({ count: 0 });
 ```
 
 ## function
