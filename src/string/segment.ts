@@ -3,9 +3,9 @@
  * by grapheme, word, or sentence. Effectively, a way more reliable way of doing
  * input.split(""), input.split(" "), or input.split(".") respectively. (since
  * those methods are not reliable for all languages).
+ *
+ * @remark Default option is to segment by grapheme (letter for alphabetical scripts)
  */
-
-// default option is to segment by grapheme (letter for alphabetical scripts)
 export const segment = (
   input: string,
   ...[locales, options]: ConstructorParameters<typeof Intl.Segmenter>
@@ -14,15 +14,16 @@ export const segment = (
     (s) => s.segment,
   );
 
-// segment by word
-// it filters out non-word-like segments (e.g. punctuation marks)
-// more reliable than input.split(" ")
+/**
+ * Segment a string into an array of words. Filters out non-word-like segments
+ * (e.g. punctuation marks). More reliable than input.split(" ").
+ */
 export const segmentByWord = (
   input: string,
   // if not interested in locale-specific word segmentation, may be ommitted and
   // just set locale to undefined and do not provide options
   locales?: Intl.LocalesArgument,
-  options?: Omit<Intl.SegmenterOptions, "granularity">,
+  options?: Omit<Intl.SegmenterOptions, "granularity">, // exclude granularity, always "word"
 ) =>
   Array.from(
     new Intl.Segmenter(locales, {
@@ -30,7 +31,7 @@ export const segmentByWord = (
       ...options,
     }).segment(input),
   )
-    // alternatively can use .reduce() to do so in single iteration
+    // Alternatively can use .reduce() to do so in single iteration
     // e.g. arr.reduce((acc, s) => (s.isWordLike ? [...acc, s.segment] : acc), [])
     .filter((s) => s.isWordLike)
     .map((s) => s.segment);

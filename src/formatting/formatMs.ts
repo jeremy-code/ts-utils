@@ -3,6 +3,9 @@
  * `ms`, `pretty-ms`, `@lukeed/ms`, etc, albeit without parsing capabilities
  * (such would make the locale handling more complex and also likely involve
  * complex regex).
+ *
+ * Using `Intl.NumberFormat`, though `Intl.RelativeTimeFormat` may be more
+ * appropriate depending on use case.
  */
 
 // Constants for time conversion. Separated into individual constants, so they
@@ -26,7 +29,7 @@ const UNITS: Record<string, number> = {
   minute: MS_PER_MINUTE,
   hour: MS_PER_HOUR,
   day: MS_PER_DAY,
-  // Additionally, week, month, etc. could also be added here. Note that due to
+  // Likewise, week, month, etc. could also be added here. Note that due to
   // calendars, months/years are not fixed units.
 };
 
@@ -43,37 +46,42 @@ export const formatMs = (
   return Intl.NumberFormat(locales, {
     style: "unit",
     unit,
-    // For similar output to `ms` package, use these options:
+    // For similar output to `ms` package, use options:
     // notation: "compact",
     // unitDisplay: "narrow",
     ...options,
   }).format(ms / (UNITS[unit] ?? 1));
 };
 
-// Exact time formatting where ms are rounded to the nearest unit
-// Similar to `pretty-ms` package
+/**
+ * Exact time formatting where ms are rounded to the nearest unit
+ *
+ * Similar to `pretty-ms` package
+ *
+ * In the future, using `Intl.DurationFormat` (which is in Stage 3) may be more
+ * appropriate, but it is currently only supported in Safari.
+ */
+
 export const formatMsExact = (
   ms: number,
-  // using .toLocaleString() instead of Intl.NumberFormat(), but they use the
-  // same parameters anyway
-  ...[locales, options]: ConstructorParameters<Intl.NumberFormatConstructor>
+  ...[locales, options]: Parameters<number["toLocaleString"]>
 ): string =>
-  // Effectively, join formatted units with space. May update options inline if
-  // list separators (,) are needed. However, since there are only 3 options
-  // (localeMatcher, type, style), it seems unnecessary to have its own
-  // parameter
+  // Effectively, in English, join formatted units with space. Since there are
+  // only 3 options for Intl.ListFormat, it seems unnecessary to have its own
+  // option parameter
   new Intl.ListFormat(locales, {
     type: "unit",
-    style: "narrow", // update to "short" to add list separators (commas in English)
+    style: "narrow", // Update to "short" to add list separators (commas in English)
   }).format(
     // Did not include UNITS["millisecond"] since it seems redundant, but can be
-    // added to constant if needed
+    // added to constant UNITS if needed
     [["millisecond", 1] as const, ...Object.entries(UNITS)].reduceRight<
       string[]
     >((acc, [unit, msPerUnit]) => {
       if (ms >= msPerUnit) {
         const unitsPerMs = Math.floor(ms / msPerUnit);
         ms %= msPerUnit; // remainder, update ms
+        // Using concat to avoid mutating array, but push is also valid
         acc = acc.concat([
           unitsPerMs.toLocaleString(locales, {
             style: "unit",

@@ -6,7 +6,11 @@
  *
  * Since each unit multiple is considered a separate unit, we have to manually
  * determine the appropriate unit and corresponding value, otherwise we get
- * formatting such as "1 BB" instead of "1 GB". */
+ * formatting such as "1 BB" instead of "1 GB".
+ *
+ * Roughly equivalent to `pretty-bytes` package (ranked 916 in npm popularity,
+ * 11M weekly downloads)
+ */
 
 /**
  * Per {@link https://tc39.es/ecma402/#table-sanctioned-single-unit-identifiers},
@@ -31,7 +35,9 @@ export const formatBytes = (
   bytes: number,
   ...[locales, options]: ConstructorParameters<Intl.NumberFormatConstructor>
 ): string => {
-  // Negative bytes doesn't really make sense
+  // Negative bytes doesn't really make sense. Not technically correct for
+  // Intl.NumberFormat since doesn't obey signDisplay option, but as previously
+  // stated, negative bytes doesn't make sense.
   if (Math.sign(bytes) === -1) return `-${formatBytes(Math.abs(bytes))}`;
 
   const exponent =

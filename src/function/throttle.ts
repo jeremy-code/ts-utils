@@ -1,3 +1,6 @@
+/**
+ * Throttle a function to be called at most once every `ms` milliseconds.
+ */
 export function throttle<T extends (...args: Parameters<T>) => ReturnType<T>>(
   callback: T,
   ms: number,

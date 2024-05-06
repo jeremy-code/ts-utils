@@ -11,11 +11,11 @@ export default tseslint.config(
   ...markdown.configs.recommended,
   {
     languageOptions: {
+      globals: { ...globals.node, ...globals.browser },
       parserOptions: {
         project: true,
         tsconfigRootDir: import.meta.dirname,
       },
-      globals: { ...globals.node, ...globals.browser },
     },
   },
   {
@@ -23,7 +23,7 @@ export default tseslint.config(
     ...jest.configs["flat/recommended"],
   },
   {
-    files: ["**/*.?(c|m)js"],
+    files: ["**/*.?(c|m)js", "**/*.md"],
     ...tseslint.configs.disableTypeChecked,
   },
   prettier,

@@ -1,4 +1,4 @@
-// immutable approach
+// Immutable approach
 export const chunk = <T>(items: T[], size: number) =>
   items.reduce<T[][]>((arr, item, i) => {
     return i % size === 0 ?
@@ -6,7 +6,7 @@ export const chunk = <T>(items: T[], size: number) =>
       : [...arr.slice(0, -1), [...(arr.slice(-1)[0] || []), item]];
   }, []);
 
-// mutable approach, slightly faster and cleaner code
+// Mutable approach, slightly faster and arguably cleaner code
 export const chunk1 = <T>(items: T[], size: number) => {
   const result: T[][] = [];
   for (let i = 0; i < items.length; i += size) {

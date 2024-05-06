@@ -47,7 +47,15 @@
 ### capitalize.ts
 
 ```typescript
-// Equivalent to utility types Capitalize<T> and Uncapitalize<T>
+/**
+ * @file Utility functions for the intrinsic string manipulation types in
+ * TypeScript (e.g. capitalize, uncapitalize, uppercase, lowercase). capitalize
+ * and uncapitalize are more useful, but uppercase and lowercase are included
+ * for completeness.
+ *
+ * Functions are locale-insensitive and works best in English, and becomes
+ * signficantly more complex if one wants locale sensitivity.
+ */
 
 // Preference for .charAt() over array indexing [] in case of empty string ""
 
@@ -62,6 +70,18 @@ export const capitalize2 = (str: string) =>
 
 export const uncapitalize = <T extends string>(str: T) =>
   `${str.charAt(0).toLowerCase()}${str.substring(1)}` as Uncapitalize<T>;
+
+/**
+ * uppercase() and lowercase() functions for completeness. Since they are really
+ * simple, simply using .toUpperCase() and .toLowerCase() methods and casting
+ * should be preferred instead.
+ */
+
+export const uppercase = <T extends string>(str: T) =>
+  str.toUpperCase() as Uppercase<T>;
+
+export const lowercase = <T extends string>(str: T) =>
+  str.toLowerCase() as Lowercase<T>;
 ```
 
 ### randomString.ts
@@ -89,7 +109,7 @@ const CHARACTERS =
 
 export const randomString = (length: number, characters = CHARACTERS) =>
   Array.from(
-    // using crypto.getRandomValues() for better randomness/security
+    // Using crypto.getRandomValues() for better randomness/security
     crypto.getRandomValues(new Uint8Array(length)),
     (byte) => characters[byte % characters.length],
   ).join("");
@@ -103,9 +123,9 @@ export const randomString = (length: number, characters = CHARACTERS) =>
  * by grapheme, word, or sentence. Effectively, a way more reliable way of doing
  * input.split(""), input.split(" "), or input.split(".") respectively. (since
  * those methods are not reliable for all languages).
+ *
+ * @remark Default option is to segment by grapheme (letter for alphabetical scripts)
  */
-
-// default option is to segment by grapheme (letter for alphabetical scripts)
 export const segment = (
   input: string,
   ...[locales, options]: ConstructorParameters<typeof Intl.Segmenter>
@@ -114,15 +134,16 @@ export const segment = (
     (s) => s.segment,
   );
 
-// segment by word
-// it filters out non-word-like segments (e.g. punctuation marks)
-// more reliable than input.split(" ")
+/**
+ * Segment a string into an array of words. Filters out non-word-like segments
+ * (e.g. punctuation marks). More reliable than input.split(" ").
+ */
 export const segmentByWord = (
   input: string,
   // if not interested in locale-specific word segmentation, may be ommitted and
   // just set locale to undefined and do not provide options
   locales?: Intl.LocalesArgument,
-  options?: Omit<Intl.SegmenterOptions, "granularity">,
+  options?: Omit<Intl.SegmenterOptions, "granularity">, // exclude granularity, always "word"
 ) =>
   Array.from(
     new Intl.Segmenter(locales, {
@@ -130,7 +151,7 @@ export const segmentByWord = (
       ...options,
     }).segment(input),
   )
-    // alternatively can use .reduce() to do so in single iteration
+    // Alternatively can use .reduce() to do so in single iteration
     // e.g. arr.reduce((acc, s) => (s.isWordLike ? [...acc, s.segment] : acc), [])
     .filter((s) => s.isWordLike)
     .map((s) => s.segment);
@@ -139,20 +160,32 @@ export const segmentByWord = (
 ### truncateMiddle.ts
 
 ```typescript
-// use text-overflow: ellipsis in CSS if truncating text in the middle is not necessary
+// Use text-overflow: ellipsis in CSS to truncate text at the end of a string.
 
+/**
+ * Truncate a string to at most `targetLength` in the middle, keeping the first and
+ * last characters while inserting a placeholder in the middle.
+ *
+ * Useful for hrefs, filenames, etc. where the start and end of the string are
+ * important.
+ *
+ * In the future, this may not be necessary depending on CSS support, see:
+ * {@link https://github.com/w3c/csswg-drafts/issues/3937}
+ *
+ * @example truncateMiddle("1234567890", 5) // "1...0"
+ */
 export const truncateMiddle = (
-  text: string,
-  maxLength: number,
-  // may want to set default placeholder to "…" (unicode ellipsis character)
+  str: string,
+  targetLength: number,
+  // May want to set default placeholder to "…" (unicode ellipsis character)
   // instead of "..." (three dots)
   placeholder = "...",
 ) =>
-  text.length > maxLength ?
-    text.slice(0, Math.ceil((maxLength - placeholder.length) / 2)) +
+  str.length > targetLength ?
+    str.slice(0, Math.ceil((targetLength - placeholder.length) / 2)) +
     placeholder +
-    text.slice(-Math.floor((maxLength - placeholder.length) / 2))
-  : text;
+    str.slice(-Math.floor((targetLength - placeholder.length) / 2))
+  : str; // if targetLength is less than or equal to str.length, string will be returned as-is
 ```
 
 ## object
@@ -161,17 +194,17 @@ export const truncateMiddle = (
 
 ```typescript
 /**
- * Equivalent to `lodash.isempty`, which is the 2489th most popular package with
- * 2M weekly downloads
+ * Roughly equivalent to `lodash.isempty`, which is the 2489th most popular
+ * package with 2M weekly downloads
  */
 
 export const isEmpty = (value: unknown) => {
   if (value === null || value === undefined) return true;
   if (Array.isArray(value) || typeof value === "string")
-    return value.length === 0;
+    return value.length === 0; // [] or ""
   if (value instanceof Map || value instanceof Set) return value.size === 0;
-  // must be last in case of Array, Map, Set
-  if (typeof value === "object") return Object.entries(value).length === 0;
+  // Must be last in case of Array, Map, Set
+  if (typeof value === "object") return Object.entries(value).length === 0; // {}
 
   return false;
 };
@@ -188,23 +221,45 @@ export const isEmpty1 = (value: unknown) =>
 
 ### isPlainObject.ts
 
-```typescript
+````typescript
 /**
+ * Walks up the prototype chain to find the base prototype, then compares it to
+ * the original prototype. If they are the same, it is a plain object.
+ *
  * Equivalent to `lodash.isplainobject`, which is the 382th most popular package with
  * 15M weekly downloads
+ *
+ * The signficantly easier function would be the following, but for cross-realm
+ * objects, where the identity of the Object prototype is different, it would
+ * fail:
+ *
+ * @example
+ * ```ts
+ * const isPlainObj = (value: unknown) =>
+ *   !!value && Object.getPrototypeOf(value) === Object.prototype;
+ * ```
  */
-
 export function isPlainObject(obj: unknown) {
-  if (typeof obj !== "object" || obj === null) return false;
-  let proto = obj;
-  while (Object.getPrototypeOf(proto) !== null) {
-    proto = Object.getPrototypeOf(proto) as object;
+  if (typeof obj !== "object" || obj === null) {
+    return false;
   }
-  return (
-    Object.getPrototypeOf(obj) === proto || Object.getPrototypeOf(obj) === null
-  );
+
+  const proto = Object.getPrototypeOf(obj) as object | null;
+
+  // Null prototype (e.g. `Object.create(null)`)
+  if (proto === null) {
+    return true;
+  }
+
+  // Walks up the prototype chain to find the base prototype
+  let baseProto = proto;
+  while (Object.getPrototypeOf(baseProto) !== null) {
+    baseProto = Object.getPrototypeOf(baseProto) as object;
+  }
+
+  return proto === baseProto;
 }
-```
+````
 
 ### jsonStringifyMap.ts
 
@@ -257,11 +312,15 @@ export const mapReviver = (_key: string, value: unknown) =>
 ### parseFormData.ts
 
 ```typescript
+/**
+ * Parses FormData object into a plain object.
+ */
 export const parseFormData = (formData: FormData) =>
   Array.from(formData).reduce<
     Record<string, FormDataEntryValue | FormDataEntryValue[]>
   >((acc, [k, v]) => {
     if (!acc[k]) {
+      // Returns array only if there are multiple values
       const values = formData.getAll(k);
       acc[k] = values.length > 1 ? values : v;
     }
@@ -272,10 +331,14 @@ export const parseFormData = (formData: FormData) =>
 ### parseUrlSearchParams.ts
 
 ```typescript
+/**
+ * Parse URLSearchParams to plain object.
+ */
 export const parseUrlSearchParams = (urlSearchParams: URLSearchParams) =>
   Array.from(urlSearchParams).reduce<Record<string, string | string[]>>(
     (acc, [k, v]) => {
       if (!acc[k]) {
+        // Returns array only if there are multiple values
         const values = urlSearchParams.getAll(k);
         acc[k] = values.length > 1 ? values : v;
       }
@@ -288,21 +351,28 @@ export const parseUrlSearchParams = (urlSearchParams: URLSearchParams) =>
 ### pick.ts
 
 ```typescript
-// equivalent to pick utility type in TypeScript and lodash.pick
+/**
+ * @file pick() and omit() utility functions for objects, equivalent to the
+ * TypeScript utility types `Pick` and `Omit`.
+ */
 
+// Equivalent to pick utility type in TypeScript and lodash.pick
 export const pick = <T extends object, K extends keyof T>(
   obj: T,
   keys: readonly K[],
 ): Pick<T, K> =>
+  // Casting to Pick<T, K> is necessary because Object.fromEntries returns { [k:
+  // string]: T; }, so as long as keys are only strings, cast should be safe
   Object.fromEntries(keys.map((key) => [key, obj[key]])) as Pick<T, K>;
 
-// casting to Pick<T, K> is necessary because Object.fromEntries returns { [k: string]: T; }
-// so as long as keys are not symbols, this should be safe
-//
-// omit is not as common as pick, hence here for completeness
-//
-// mutable approach, imo more readable may want to change type from { [key:
-// string]: unknown } to something else depending on use case
+/**
+ * Omit is not as common as pick, but here for completeness.
+ *
+ * Mutable approach, which imo is more readable. May want to change type from {
+ * [key: string]: unknown } to something else (such as key: PropertyKey)
+ * depending on use case.
+ */
+
 export function omit<T extends { [key: string]: unknown }, K extends keyof T>(
   object: T,
   keys: K[],
@@ -316,7 +386,7 @@ export function omit<T extends { [key: string]: unknown }, K extends keyof T>(
   return omitted as Omit<T, K>;
 }
 
-// immutable approach, chaining Object.entries and Object.fromEntries
+// Immutable approach by chaining Object.entries and Object.fromEntries
 export const omit1 = <T extends { [key: string]: unknown }, K extends keyof T>(
   object: T,
   keys: K[],
@@ -368,11 +438,18 @@ export const shallowEqual = <T extends Record<string, unknown>>(
 ### randomNum.ts
 
 ```typescript
-// random number between min and max (inclusive)
+/**
+ * Generates a random integer between min and max (inclusive) using Math.random.
+ *
+ * Some may use Math.round (e.g. `Math.round(Math.random() * (max - min) +
+ * min)`) but this skews the distribution.
+ *
+ * @example randomNum(1,6) // 4
+ */
 export const randomNum = (min: number, max: number) =>
   Math.floor(
     Math.random() *
-      // remove + 1 to make the max exclusive
+      // Remove `+ 1` to make the max exclusive
       (Math.floor(max) - Math.ceil(min) + 1) +
       Math.ceil(min),
   );
@@ -385,7 +462,7 @@ export const relativeError = (actual: number, expected: number) =>
   // if expected is 0, returns NaN
   Math.abs((actual - expected) / expected);
 
-// for completeness, inlining the function `Math.abs(actual - expected)` is
+// For completeness. Inlining the function `Math.abs(actual - expected)` is
 // probably clearer
 export const absoluteError = (actual: number, expected: number) =>
   Math.abs(actual - expected);
@@ -405,10 +482,20 @@ export const absoluteError = (actual: number, expected: number) =>
 // max = Math.max
 // range = Math.max - Math.min
 
-// May want to extract the sum reduce() to its own function
+/**
+ * For now, sum is inlined when needed (e.g. .reduce((a, b) => a + b, 0)). This
+ * is somewhat imprecise for groups of floating point numbers, but generally
+ * fine for most use cases.
+ *
+ * In the future, Math.sumPrecise(), which is in Stage 2.7, may be avaliable and
+ * may be used with some performance tradeoffs.
+ *
+ * {@link https://github.com/tc39/proposal-math-sum}
+ */
+
 export const mean = (...values: number[]) =>
   values.length === 0 ?
-    undefined // matches standard for array functions
+    undefined // Matches standard for array functions
   : values.reduce((acc, value) => acc + value, 0) / values.length;
 
 export const median = (...values: number[]) => {
@@ -420,7 +507,7 @@ export const median = (...values: number[]) => {
 
   return sorted.length % 2 !== 0 ?
       sorted[mid]
-      // should never be undefined, for noUncheckedIndexedAccess
+      // Should never be undefined, `?? 0` for noUncheckedIndexedAccess
     : ((sorted[mid - 1] ?? 0) + (sorted[mid] ?? 0)) / 2;
 };
 
@@ -437,11 +524,10 @@ export const mode = (...values: number[]) => {
     (acc, [value, count]) => (count === maxCount ? [...acc, value] : acc),
     [],
   );
-  // alternatively, chain filter() and map() instead of reduce() for readability
+  // Alternatively, chain .filter().map() instead of reduce() for readability
   // .filter(([, count]) => count === maxCount).map(([value]) => value);
 
-  // alternatively, use .find() if only want the first element with the highest
-  // count
+  // May use .find() if only need first element with the highest count
 };
 
 export const variance = (...values: number[]) => {
@@ -453,7 +539,7 @@ export const variance = (...values: number[]) => {
   );
 };
 
-// could use variance() for this calculation to simplify
+// Could use `variance()` for this calculation to simplify code
 export const standardDeviation = (...values: number[]) => {
   if (values.length === 0) return undefined;
 
@@ -470,6 +556,10 @@ export const standardDeviation = (...values: number[]) => {
 ### assertIsError.ts
 
 ```typescript
+/**
+ * Useful in try/catch blocks to ensure `error: unknown` is an Error without
+ * having to wrap error handling in `if (error instanceof Error)`
+ */
 export function assertIsError(error: unknown): asserts error is Error {
   if (!(error instanceof Error)) {
     throw new Error(`Expected an Error but got ${typeof error}`, {
@@ -482,7 +572,13 @@ export function assertIsError(error: unknown): asserts error is Error {
 ### assertNever.ts
 
 ```typescript
+/**
+ * Enforces that a value is never reached (e.g. in a switch statement). Useful
+ * for exhaustiveness.
+ */
 export function assertNever(value: never, message?: string): never {
+  // JSON.stringify is not perfect, such as for Map, Set, but works for most
+  // cases, and avoids issues working with `never`
   throw new Error(message ?? `Unexpected value: ${JSON.stringify(value)}`, {
     cause: value,
   });
@@ -492,24 +588,27 @@ export function assertNever(value: never, message?: string): never {
 ### createRangeMapper.ts
 
 ```typescript
-// start inclusive, end exclusive
 type Range = [start: number, end: number];
 
 export const createRangeMapper = <T extends PropertyKey>(
   map: Record<T, Range>,
 ) => {
   return (value: number) => {
-    const entry = Object.entries<Range>(map).find(([, [start, end]], i) =>
-      i === 0 ?
-        // inclusive of start and end on first entry (e.g. on A: [0, 100], 100 would be an A)
-        value >= start && value <= end
-      : start <= value && value < end,
+    const entry = Object.entries<Range>(map).find(
+      ([, [start, end]], i) =>
+        i === 0 ?
+          // Inclusive of start and end on first entry (e.g. on A: [90, 100], 100 would be an A)
+          value >= start && value <= end
+        : start <= value && value < end, // exclusive of end on subsequent entries
     );
 
     if (!entry) {
-      throw new Error(`Invalid value with no corresponding range: ${value}`, {
-        cause: { map, value },
-      });
+      throw new RangeError(
+        `Invalid value with no corresponding range: ${value}`,
+        {
+          cause: { map, value },
+        },
+      );
     }
 
     return entry[0] as T;
@@ -521,21 +620,22 @@ export const createRangeMapper = <T extends PropertyKey>(
 
 ```typescript
 /**
- * Intended for use in React with useSyncExternalStore(). For more complex use
+ * Intended for use in React with `useSyncExternalStore()`. For more complex use
  * cases, see a library like Zustand.
  *
  * A start for a simple store implementation. Notably, it wouldn't actually work
  * by itself. Since the state is mutated instead of replaced, React would never
- * re-render, since it passes Object.is equality.
+ * re-render, since it passes Object.is equality due to having same reference.
  */
-
 export function createStore<S>(initialState: S | (() => S)) {
+  // Matches useState's behavior
   let state =
     typeof initialState === "function" ?
       (initialState as () => S)()
     : initialState;
   const listeners = new Set<() => void>();
 
+  // Using an object with methods. Class may be more appropriate.
   return {
     getSnapshot: () => state,
     subscribe: (onStoreChange: () => void) => {
@@ -550,7 +650,7 @@ export function createStore<S>(initialState: S | (() => S)) {
   };
 }
 
-// would have to initialize somewhere
+// Would have to be initialized somewhere to be used:
 export const store = createStore({ count: 0 });
 ```
 
@@ -591,6 +691,9 @@ export const sleep = (ms?: number) =>
 ### throttle.ts
 
 ```typescript
+/**
+ * Throttle a function to be called at most once every `ms` milliseconds.
+ */
 export function throttle<T extends (...args: Parameters<T>) => ReturnType<T>>(
   callback: T,
   ms: number,
@@ -621,7 +724,11 @@ export function throttle<T extends (...args: Parameters<T>) => ReturnType<T>>(
  *
  * Since each unit multiple is considered a separate unit, we have to manually
  * determine the appropriate unit and corresponding value, otherwise we get
- * formatting such as "1 BB" instead of "1 GB". */
+ * formatting such as "1 BB" instead of "1 GB".
+ *
+ * Roughly equivalent to `pretty-bytes` package (ranked 916 in npm popularity,
+ * 11M weekly downloads)
+ */
 
 /**
  * Per {@link https://tc39.es/ecma402/#table-sanctioned-single-unit-identifiers},
@@ -646,7 +753,9 @@ export const formatBytes = (
   bytes: number,
   ...[locales, options]: ConstructorParameters<Intl.NumberFormatConstructor>
 ): string => {
-  // Negative bytes doesn't really make sense
+  // Negative bytes doesn't really make sense. Not technically correct for
+  // Intl.NumberFormat since doesn't obey signDisplay option, but as previously
+  // stated, negative bytes doesn't make sense.
   if (Math.sign(bytes) === -1) return `-${formatBytes(Math.abs(bytes))}`;
 
   const exponent =
@@ -703,6 +812,9 @@ export const formatBytesBinary = (
  * `ms`, `pretty-ms`, `@lukeed/ms`, etc, albeit without parsing capabilities
  * (such would make the locale handling more complex and also likely involve
  * complex regex).
+ *
+ * Using `Intl.NumberFormat`, though `Intl.RelativeTimeFormat` may be more
+ * appropriate depending on use case.
  */
 
 // Constants for time conversion. Separated into individual constants, so they
@@ -726,7 +838,7 @@ const UNITS: Record<string, number> = {
   minute: MS_PER_MINUTE,
   hour: MS_PER_HOUR,
   day: MS_PER_DAY,
-  // Additionally, week, month, etc. could also be added here. Note that due to
+  // Likewise, week, month, etc. could also be added here. Note that due to
   // calendars, months/years are not fixed units.
 };
 
@@ -743,37 +855,42 @@ export const formatMs = (
   return Intl.NumberFormat(locales, {
     style: "unit",
     unit,
-    // For similar output to `ms` package, use these options:
+    // For similar output to `ms` package, use options:
     // notation: "compact",
     // unitDisplay: "narrow",
     ...options,
   }).format(ms / (UNITS[unit] ?? 1));
 };
 
-// Exact time formatting where ms are rounded to the nearest unit
-// Similar to `pretty-ms` package
+/**
+ * Exact time formatting where ms are rounded to the nearest unit
+ *
+ * Similar to `pretty-ms` package
+ *
+ * In the future, using `Intl.DurationFormat` (which is in Stage 3) may be more
+ * appropriate, but it is currently only supported in Safari.
+ */
+
 export const formatMsExact = (
   ms: number,
-  // using .toLocaleString() instead of Intl.NumberFormat(), but they use the
-  // same parameters anyway
-  ...[locales, options]: ConstructorParameters<Intl.NumberFormatConstructor>
+  ...[locales, options]: Parameters<number["toLocaleString"]>
 ): string =>
-  // Effectively, join formatted units with space. May update options inline if
-  // list separators (,) are needed. However, since there are only 3 options
-  // (localeMatcher, type, style), it seems unnecessary to have its own
-  // parameter
+  // Effectively, in English, join formatted units with space. Since there are
+  // only 3 options for Intl.ListFormat, it seems unnecessary to have its own
+  // option parameter
   new Intl.ListFormat(locales, {
     type: "unit",
-    style: "narrow", // update to "short" to add list separators (commas in English)
+    style: "narrow", // Update to "short" to add list separators (commas in English)
   }).format(
     // Did not include UNITS["millisecond"] since it seems redundant, but can be
-    // added to constant if needed
+    // added to constant UNITS if needed
     [["millisecond", 1] as const, ...Object.entries(UNITS)].reduceRight<
       string[]
     >((acc, [unit, msPerUnit]) => {
       if (ms >= msPerUnit) {
         const unitsPerMs = Math.floor(ms / msPerUnit);
         ms %= msPerUnit; // remainder, update ms
+        // Using concat to avoid mutating array, but push is also valid
         acc = acc.concat([
           unitsPerMs.toLocaleString(locales, {
             style: "unit",
@@ -792,10 +909,13 @@ export const formatMsExact = (
 ### formatNumber.ts
 
 ```typescript
+/**
+ * Coerces a value to a number and formats it using the provided options.
+ */
 export const formatNumber = (
-  number: unknown,
+  value: unknown,
   ...params: ConstructorParameters<Intl.NumberFormatConstructor>
-) => new Intl.NumberFormat(...params).format(Number(number));
+) => new Intl.NumberFormat(...params).format(Number(value));
 ```
 
 ### formatOrdinal.ts
@@ -808,9 +928,14 @@ const SUFFIXES = {
   two: "nd",
   few: "rd",
   other: "th",
-  many: "th", // should never occur in English, included for TypeScript
+  many: "th", // Should never occur in English, included for TypeScript
 } satisfies Record<Intl.LDMLPluralRule, string>;
 
+/**
+ * Formats a number as an ordinal (e.g. 1st, 2nd, 3rd, 4th).
+ *
+ * @example formatOrdinal(1) // "1st"
+ */
 export const formatOrdinal = (
   num: number,
   ...[locales, options]: ConstructorParameters<Intl.PluralRulesConstructor>
@@ -823,7 +948,9 @@ export const formatOrdinal = (
       }).select(num)
     ];
 
-  return `${num}${suffix}`;
+  // Options are not passed to `toLocaleString` and using the shared parameters
+  // of Intl.PluralRules. Feel free to add as an parameter if needed.
+  return `${num.toLocaleString(locales, options)}${suffix}`;
 };
 ```
 
@@ -831,8 +958,12 @@ export const formatOrdinal = (
 
 ```typescript
 /**
+ * A tagged template literal for encoding URI components.
+ *
  * In the future, this may be simplified with the `String.cooked` proposal
  * {@link https://github.com/tc39/proposal-string-cooked}
+ *
+ * @example uri`https://example.com/${name}` // https://example.com/John%20Doe
  */
 export const uri = (
   template: TemplateStringsArray,
@@ -849,16 +980,18 @@ export const uri = (
 /**
  * Some color utilities. Unfortunately, color manipulation in general is really
  * complicated, and a task more befitting of a library than a handful of utility
- * functions. If you need to do anything more complicated than what's here, see
- * the libraries: color, color-string, d3-color, colord, tinycolor2, chroma-js,
- * etc. Or, if you're using a CSS-in-JS library, it might have color utilities
- * built in.
+ * functions.
+ *
+ * If you need to do anything more complicated than what's here, see the
+ * libraries: color, color-string, d3-color, colord, tinycolor2, chroma-js, etc.
+ * Or, if you're using a CSS-in-JS library, it might have color utilities built
+ * in.
  *
  * If you want to see a more complex set of color manipulation utils, see
  * {@link https://github.com/microsoft/vscode/blob/main/src/vs/base/common/color.ts}
  */
 
-// no support for alpha channel/transparency
+// No support for alpha channel/transparency
 type RGB = {
   r: number;
   g: number;
@@ -867,6 +1000,7 @@ type RGB = {
 
 export const hexToRgb = (hex: string): RGB => {
   const hexValue = hex.startsWith("#") ? hex.slice(1) : hex;
+  // Expand shorthand hex values (e.g. #fff -> #ffffff)
   const fullHex =
     hexValue.length === 3 || hexValue.length === 4 ?
       [...hexValue].map((char) => char.repeat(2)).join("")
@@ -890,7 +1024,7 @@ export const rgbToHex = ({ r, g, b }: RGB) =>
 ### chunk.ts
 
 ```typescript
-// immutable approach
+// Immutable approach
 export const chunk = <T>(items: T[], size: number) =>
   items.reduce<T[][]>((arr, item, i) => {
     return i % size === 0 ?
@@ -898,7 +1032,7 @@ export const chunk = <T>(items: T[], size: number) =>
       : [...arr.slice(0, -1), [...(arr.slice(-1)[0] || []), item]];
   }, []);
 
-// mutable approach, slightly faster and cleaner code
+// Mutable approach, slightly faster and arguably cleaner code
 export const chunk1 = <T>(items: T[], size: number) => {
   const result: T[][] = [];
   for (let i = 0; i < items.length; i += size) {
@@ -911,16 +1045,26 @@ export const chunk1 = <T>(items: T[], size: number) => {
 ### isIterable.ts
 
 ```typescript
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterable_protocol
-
+/**
+ * Check if a value is an iterable object (implements the iterable protocol).
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterable_protocol}
+ *
+ * @example isIterable(new Set()) // true
+ */
 export const isIterable = (value: unknown): value is Iterable<unknown> =>
   typeof value === "object" &&
   value !== null && // typeof null === 'object'
   Symbol.iterator in value &&
   typeof value[Symbol.iterator] === "function";
 
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Indexed_collections#working_with_array-like_objects
-
+/**
+ * Check if a value is an array-like object (is an object and has a length property).
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Indexed_collections#working_with_array-like_objects}
+ *
+ * @example isArrayLike({ length: 0 }) // true
+ */
 export const isArrayLike = (value: unknown): value is ArrayLike<unknown> =>
   typeof value === "object" &&
   value !== null && // typeof null === 'object'
@@ -931,18 +1075,26 @@ export const isArrayLike = (value: unknown): value is ArrayLike<unknown> =>
 ### minMax.ts
 
 ```typescript
-// unlike [Math.min(), Math.max()], this function only iterates through the
-// array once, more suitable for large arrays (and prevents stack overflow
-// errors)
+// Explicit type to name tuple elements
+type Range = [min: number, max: number];
+
+/**
+ * Find the minimum and maximum values in an array of numbers.
+ *
+ * Unlike [Math.min(), Math.max()], this function only iterates through the
+ * array once, more suitable for large arrays (and prevents stack overflow
+ * errors, since Math.min/max is variadic).
+ *
+ * @example minMax([1, 2, 3, 4, 5]) // [1, 5]
+ */
 export const minMax = (arr: number[]) =>
-  arr.reduce<[number, number]>(
+  arr.reduce<Range>(
     (acc, item) => {
       acc[0] = Math.min(acc[0], item);
       acc[1] = Math.max(acc[1], item);
       return acc;
     },
-    // by default, the min is Infinity and the max is -Infinity to handle empty arrays
-    // can remove this default if you know the array will never be empty
+    // By default, [min, max] = [Infinity, -Infinity] to handle empty arrays
     [Infinity, -Infinity],
   );
 ```
@@ -953,7 +1105,7 @@ export const minMax = (arr: number[]) =>
 /**
  * Generate an array of numbers from start to end (inclusive) with optional step
  *
- * Roughly equivalent to `Iterable.range()` proposal, see
+ * Roughly equivalent to `Iterable.range()` proposal in Stage 2, see
  * {@link https://github.com/tc39/proposal-iterator.range}
  *
  * @example range(1, 5) // [1, 2, 3, 4, 5]
@@ -974,7 +1126,6 @@ export const range = (start: number, end: number, step = 1) => {
    * @see https://google.github.io/styleguide/tsguide.html#array-constructor
    * @see https://jsbench.me/lxlv8rn8kd
    */
-
   return Array.from({ length }, (_, index) => start + index * step);
 };
 ```

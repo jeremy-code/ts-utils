@@ -20,7 +20,7 @@ const CHARACTERS =
 
 export const randomString = (length: number, characters = CHARACTERS) =>
   Array.from(
-    // using crypto.getRandomValues() for better randomness/security
+    // Using crypto.getRandomValues() for better randomness/security
     crypto.getRandomValues(new Uint8Array(length)),
     (byte) => characters[byte % characters.length],
   ).join("");

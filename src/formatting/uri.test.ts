@@ -20,4 +20,12 @@ describe("uri function", () => {
     const result = uri`/static/path`;
     expect(result).toBe("/static/path");
   });
+
+  test("decodes encoded values", () => {
+    const result = uri`/api/resource?name=${"John Doe"}&active=${true}`;
+    expect(result).toBe("/api/resource?name=John%20Doe&active=true");
+
+    const decoded = decodeURI(result);
+    expect(decoded).toBe("/api/resource?name=John Doe&active=true");
+  });
 });

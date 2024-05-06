@@ -1,4 +1,7 @@
+/**
+ * Coerces a value to a number and formats it using the provided options.
+ */
 export const formatNumber = (
-  number: unknown,
+  value: unknown,
   ...params: ConstructorParameters<Intl.NumberFormatConstructor>
-) => new Intl.NumberFormat(...params).format(Number(number));
+) => new Intl.NumberFormat(...params).format(Number(value));

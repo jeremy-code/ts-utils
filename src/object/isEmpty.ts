@@ -1,15 +1,15 @@
 /**
- * Equivalent to `lodash.isempty`, which is the 2489th most popular package with
- * 2M weekly downloads
+ * Roughly equivalent to `lodash.isempty`, which is the 2489th most popular
+ * package with 2M weekly downloads
  */
 
 export const isEmpty = (value: unknown) => {
   if (value === null || value === undefined) return true;
   if (Array.isArray(value) || typeof value === "string")
-    return value.length === 0;
+    return value.length === 0; // [] or ""
   if (value instanceof Map || value instanceof Set) return value.size === 0;
-  // must be last in case of Array, Map, Set
-  if (typeof value === "object") return Object.entries(value).length === 0;
+  // Must be last in case of Array, Map, Set
+  if (typeof value === "object") return Object.entries(value).length === 0; // {}
 
   return false;
 };

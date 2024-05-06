@@ -11,14 +11,20 @@ export type Primitive =
   | null
   | undefined;
 
-// Using an accumulator for tail call recursion optimization
+// Useful for Object.keys, Object.entries, etc.
+export type StringifiedPropertyKey<T extends PropertyKey> =
+  T extends string ? T
+  : T extends number ? `${T}`
+  : never; // Symbol
+
+// Using an accumulator for tail-recursion optimization
 type Enumerate<N extends number, Acc extends number[] = []> =
   Acc["length"] extends N ? Acc[number] : Enumerate<N, [...Acc, Acc["length"]]>;
 
 /**
  * Ideally, type should be number, and validated at runtime, but may be useful in niche cases
  *
- * @example Percentage
+ * @example
  * type Percentage = Range<1, 101>; // 1-100
  */
 export type Range<From extends number, To extends number> = Exclude<
@@ -31,7 +37,7 @@ export type NumericRange = [From: number, To: number];
 /**
  * Can be used to create a number of fixed length, similar to {@link Range}
  *
- * @example 2-digit number
+ * @example
  * ```ts
  * type ParseInt<T> = T extends `${infer N extends number}` ? N : never;
  * type TwoDigitNumber = ParseInt<`${Digit}` | `${Exclude<Digit, 0>}${Digit}`>;
@@ -50,8 +56,11 @@ export type Char = Letter | Digit;
 /**
  * @see https://www.totaltypescript.com/concepts/the-prettify-helper
  *
- * @example Alternatively, can be used without {}
+ * @example
+ * Alternatively, can be used without {}
+ * ```ts
  * type Prettify<T> = { [K in keyof T]: T[K] } & unknown;
+ * ```
  */
 // eslint-disable-next-line @typescript-eslint/ban-types -- {} or unknown is necessary for compiler
 export type Prettify<T> = { [K in keyof T]: T[K] } & {};
@@ -66,7 +75,7 @@ export type Nullable<T> = T | null | undefined;
 /**
  * Alternatively, use A[number] or A[keyof A]
  *
- * @example Weekdays
+ * @example
  * ```ts
  * const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] as const;
  * type Weekday = ArrayElement<typeof weekdays>;

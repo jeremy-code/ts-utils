@@ -1,7 +1,7 @@
 /**
  * Generate an array of numbers from start to end (inclusive) with optional step
  *
- * Roughly equivalent to `Iterable.range()` proposal, see
+ * Roughly equivalent to `Iterable.range()` proposal in Stage 2, see
  * {@link https://github.com/tc39/proposal-iterator.range}
  *
  * @example range(1, 5) // [1, 2, 3, 4, 5]
@@ -22,6 +22,5 @@ export const range = (start: number, end: number, step = 1) => {
    * @see https://google.github.io/styleguide/tsguide.html#array-constructor
    * @see https://jsbench.me/lxlv8rn8kd
    */
-
   return Array.from({ length }, (_, index) => start + index * step);
 };
