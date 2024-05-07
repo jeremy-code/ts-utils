@@ -1,7 +1,7 @@
 import { mapReplacer, mapReviver } from "./jsonStringifyMap";
 
 describe("mapReplacer and mapReviver", () => {
-  test("Properly serializes and deserializes a Map", () => {
+  it("Properly serializes and deserializes a Map", () => {
     const map = new Map([
       [1, "one"],
       [2, "two"],
@@ -17,7 +17,7 @@ describe("mapReplacer and mapReviver", () => {
     expect(mapCopy).not.toBe(map);
   });
 
-  test("Handles non-Map values", () => {
+  it("Handles non-Map values", () => {
     const nonMap = { a: 1, b: 2, c: 3 };
 
     const nonMapString = JSON.stringify(nonMap, mapReplacer);
@@ -27,7 +27,7 @@ describe("mapReplacer and mapReviver", () => {
     expect(nonMapCopy).toEqual(nonMap);
   });
 
-  test("Handles non-ObjectifiedMap values", () => {
+  it("Handles non-ObjectifiedMap values", () => {
     const nonObjectifiedMap = { type: "Map", value: "not an array" };
 
     const badMapString = JSON.stringify(nonObjectifiedMap, mapReplacer);
@@ -40,7 +40,7 @@ describe("mapReplacer and mapReviver", () => {
     expect(badMapCopy).toEqual({ type: "Map", value: "not an array" });
   });
 
-  test("Handles nested Maps", () => {
+  it("Handles nested Maps", () => {
     const map = new Map<number, string | Map<number, string>>([
       [
         1,

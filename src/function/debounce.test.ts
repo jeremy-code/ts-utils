@@ -1,11 +1,10 @@
 import { debounce } from "./debounce";
 
-jest.useFakeTimers();
-
 describe("debounce", () => {
   let functionToDebounce: jest.Mock;
 
   beforeEach(() => {
+    jest.useFakeTimers();
     functionToDebounce = jest.fn();
   });
 

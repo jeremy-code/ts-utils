@@ -1,71 +1,108 @@
 import { formatBytes, formatBytesBinary } from "./formatBytes";
 
-describe("formatBytes", () => {
-  test("formats bytes correctly", () => {
-    expect(formatBytes(1)).toBe("1 byte");
-    expect(formatBytes(1000)).toBe("1 kB");
-    expect(formatBytes(1_000_000)).toBe("1 MB");
-    expect(formatBytes(1_000_000_000)).toBe("1 GB");
-    expect(formatBytes(1_000_000_000_000)).toBe("1 TB");
-    expect(formatBytes(1_000_000_000_000_000)).toBe("1 PB");
+describe("formatBytes function", () => {
+  describe("formats base SI units in bytes", () => {
+    it.each([
+      [1, "1 byte"],
+      [1000, "1 kB"],
+      [1_000_000, "1 MB"],
+      [1_000_000_000, "1 GB"],
+      [1_000_000_000_000, "1 TB"],
+      [1_000_000_000_000_000, "1 PB"],
+    ])("formats %i bytes correctly", (input, expected) => {
+      expect(formatBytes(input)).toBe(expected);
+    });
   });
 
-  test("handles zero and negative values", () => {
-    expect(formatBytes(0)).toBe("0 byte");
-    expect(formatBytes(-0)).toBe("-0 byte");
-    expect(formatBytes(-1)).toBe("-1 byte");
-    expect(formatBytes(-1000)).toBe("-1 kB");
+  describe("formats zero and negative values in bytes", () => {
+    it.each([
+      [0, "0 byte"],
+      [-0, "-0 byte"],
+      [-1, "-1 byte"],
+      [-1000, "-1 kB"],
+    ])("handles zero and negative values (%i)", (input, expected) => {
+      expect(formatBytes(input)).toBe(expected);
+    });
   });
 
-  // I cannot imagine a scenario where this would be useful.
-  test("handles non-finite values", () => {
-    expect(formatBytes(NaN)).toBe("NaN byte");
-    expect(formatBytes(Infinity)).toBe("∞ byte");
-    expect(formatBytes(-Infinity)).toBe("-∞ byte");
+  describe("formats non-finite values", () => {
+    it.each([
+      [NaN, "NaN byte"],
+      [Infinity, "∞ byte"],
+      [-Infinity, "-∞ byte"],
+    ])("handles non-finite values (%s)", (input, expected) => {
+      expect(formatBytes(input)).toBe(expected);
+    });
   });
 
-  test("applies locale formatting correctly", () => {
-    expect(formatBytes(1000, "de-DE")).toBe("1 kB");
-    expect(
-      formatBytes(1_234_567, "de-DE", { maximumSignificantDigits: 3 }),
-    ).toBe("1,23 MB");
+  describe("formats bytes with locale and options formatting", () => {
+    it.each([
+      [1000, "de-DE", undefined, "1 kB"],
+      [1_234_567, "de-DE", { maximumSignificantDigits: 3 }, "1,23 MB"],
+    ])(
+      "applies locale and options formatting correctly (%i, %s, %o)",
+      (bytes, locale, options, expected) => {
+        expect(formatBytes(bytes, locale, options)).toBe(expected);
+      },
+    );
   });
 });
 
-describe("formatBytesBinary", () => {
-  test("formats bytes correctly", () => {
-    expect(formatBytesBinary(1)).toBe("1 byte");
-    expect(formatBytesBinary(1024)).toBe("1 kB");
-    expect(formatBytesBinary(1_048_576)).toBe("1 MB");
-    expect(formatBytesBinary(1_073_741_824)).toBe("1 GB");
-    expect(formatBytesBinary(1_099_511_627_776)).toBe("1 TB");
-    expect(formatBytesBinary(1_125_899_906_842_624)).toBe("1 PB");
+describe("formatBytesBinary function", () => {
+  describe("formats base binary units in bytes", () => {
+    it.each([
+      [1, "1 byte"],
+      [1024, "1 kB"],
+      [1_048_576, "1 MB"],
+      [1_073_741_824, "1 GB"],
+      [1_099_511_627_776, "1 TB"],
+      [1_125_899_906_842_624, "1 PB"],
+    ])("formats constant  %i bytes correctly", (input, expected) => {
+      expect(formatBytesBinary(input)).toBe(expected);
+    });
 
-    // using exponents
-    expect(formatBytesBinary(2 ** 10)).toBe("1 kB");
-    expect(formatBytesBinary(2 ** 20)).toBe("1 MB");
-    expect(formatBytesBinary(2 ** 30)).toBe("1 GB");
-    expect(formatBytesBinary(2 ** 40)).toBe("1 TB");
-    expect(formatBytesBinary(2 ** 50)).toBe("1 PB");
+    it.each([
+      [2 ** 0, "1 byte"],
+      [2 ** 10, "1 kB"],
+      [2 ** 20, "1 MB"],
+      [2 ** 30, "1 GB"],
+      [2 ** 40, "1 TB"],
+      [2 ** 50, "1 PB"],
+    ])("formats exponents %i bytes correctly", (input, expected) => {
+      expect(formatBytesBinary(input)).toBe(expected);
+    });
   });
 
-  test("handles zero and negative values", () => {
-    expect(formatBytesBinary(0)).toBe("0 byte");
-    expect(formatBytesBinary(-0)).toBe("-0 byte");
-    expect(formatBytesBinary(-1)).toBe("-1 byte");
-    expect(formatBytesBinary(-1024)).toBe("-1 kB");
+  describe("formats zero and negative values in bytes", () => {
+    it.each([
+      [0, "0 byte"],
+      [-0, "-0 byte"],
+      [-1, "-1 byte"],
+      [-1024, "-1 kB"],
+    ])("handles zero and negative values (%i)", (input, expected) => {
+      expect(formatBytesBinary(input)).toBe(expected);
+    });
   });
 
-  test("handles non-finite values", () => {
-    expect(formatBytesBinary(NaN)).toBe("NaN byte");
-    expect(formatBytesBinary(Infinity)).toBe("∞ byte");
-    expect(formatBytesBinary(-Infinity)).toBe("-∞ byte");
+  describe("formats non-finite values", () => {
+    it.each([
+      [NaN, "NaN byte"],
+      [Infinity, "∞ byte"],
+      [-Infinity, "-∞ byte"],
+    ])("handles non-finite values (%s)", (input, expected) => {
+      expect(formatBytesBinary(input)).toBe(expected);
+    });
   });
 
-  test("applies locale formatting correctly", () => {
-    expect(formatBytesBinary(1024, "de-DE")).toBe("1 kB");
-    expect(
-      formatBytesBinary(1_234_576, "de-DE", { maximumSignificantDigits: 3 }),
-    ).toBe("1,18 MB");
+  describe("formats bytes with locale and options formatting", () => {
+    it.each([
+      [1024, "de-DE", undefined, "1 kB"],
+      [1_234_576, "de-DE", { maximumSignificantDigits: 3 }, "1,18 MB"],
+    ])(
+      "applies locale formatting correctly (%i, %s, %o)",
+      (bytes, locale, options, expected) => {
+        expect(formatBytesBinary(bytes, locale, options)).toBe(expected);
+      },
+    );
   });
 });

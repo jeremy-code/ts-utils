@@ -1,5 +1,5 @@
 /**
- * Anything that isn't an object
+ * Anything that isn't an object (`object` in TypeScript)
  * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#primitive_values}
  */
 export type Primitive =
@@ -24,8 +24,7 @@ type Enumerate<N extends number, Acc extends number[] = []> =
 /**
  * Ideally, type should be number, and validated at runtime, but may be useful in niche cases
  *
- * @example
- * type Percentage = Range<1, 101>; // 1-100
+ * @example type Percentage = Range<1, 101>; // 1-100
  */
 export type Range<From extends number, To extends number> = Exclude<
   Enumerate<To>,

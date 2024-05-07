@@ -3,7 +3,7 @@ import { sleep } from "./sleep";
 describe("sleep", () => {
   jest.useFakeTimers();
 
-  test("resolves after the specified time", async () => {
+  it("resolves after the specified time", async () => {
     const ms = 500;
     const start = Date.now();
 
@@ -17,7 +17,7 @@ describe("sleep", () => {
     expect(end - start).toBeGreaterThanOrEqual(ms);
   });
 
-  test("resolves immediately if no time is specified", async () => {
+  it("resolves immediately if no time is specified", async () => {
     const start = Date.now();
 
     const sleepPromise = sleep();
@@ -26,7 +26,6 @@ describe("sleep", () => {
 
     await sleepPromise;
 
-    const end = Date.now();
-    expect(end - start).toBeGreaterThanOrEqual(0);
+    expect(Date.now() - start).toBeGreaterThanOrEqual(0);
   });
 });
