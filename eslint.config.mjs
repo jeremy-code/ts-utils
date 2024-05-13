@@ -23,7 +23,7 @@ export default tseslint.config(
     ...jest.configs["flat/recommended"],
   },
   {
-    files: ["**/*.?(c|m)js", "**/*.md"],
+    files: ["**/*.?(c|m)js", "**/*.md/*"],
     ...tseslint.configs.disableTypeChecked,
   },
   prettier,

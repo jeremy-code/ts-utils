@@ -64,6 +64,17 @@ export type Char = Letter | Digit;
 // eslint-disable-next-line @typescript-eslint/ban-types -- {} or unknown is necessary for compiler
 export type Prettify<T> = { [K in keyof T]: T[K] } & {};
 
+declare const brand: unique symbol;
+
+// Branded type
+export type Brand<T, TBrand extends string> = T & { [brand]: TBrand };
+
+// Types for testing (Vitest preferred)
+export type Expect<T extends true> = T;
+export type Equal<X, Y> =
+  (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? true
+  : false;
+
 export interface Recursive<T> {
   [key: PropertyKey]: T | Recursive<T>;
 }
