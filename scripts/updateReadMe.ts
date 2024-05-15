@@ -2,12 +2,18 @@ import type { Dirent } from "node:fs";
 import fs, { readdir } from "node:fs/promises";
 import { join, relative } from "node:path";
 
+/**
+ * For convenience, text is initially separated by only one linebreak, and final
+ * content is formatted with prettier.
+ */
+const NEWLINE = "\n";
+
 // Markdown helpers
 const link = (text: string, href: string) => `[${text}](${href})`;
 const image = (alt: string, href: string) => `![${alt}](${href})`;
+// not using template strings to avoid escaping backticks
 const code = (lang: string, code: string) =>
-  // not using template strings to avoid escaping backticks
-  ["```" + lang, code, "```"].join("\n");
+  ["```" + lang, code, "```"].join(NEWLINE);
 
 const HEADER = [
   "# ts-utils",
@@ -28,6 +34,8 @@ const HEADER = [
 ].join(" ");
 
 const updateReadMe = async () => {
+  console.log("🔄 Generating README.md...");
+
   const dirents = await readdir("./src", {
     withFileTypes: true,
     recursive: true,
@@ -37,10 +45,10 @@ const updateReadMe = async () => {
   const files = dirents.reduce<Record<string, Dirent[]>>((acc, dirent) => {
     if (
       dirent.isFile() && // only files
-      !relative("src", dirent.path).startsWith("_") && // ignore directories starting with "_"
+      !relative("src", dirent.parentPath).startsWith("_") && // ignore directories starting with "_"
       !dirent.name.endsWith(".test.ts") // ignore test files
     ) {
-      acc[dirent.path] = [...(acc[dirent.path] ?? []), dirent];
+      acc[dirent.parentPath] = [...(acc[dirent.parentPath] ?? []), dirent];
     }
     return acc;
   }, {});
@@ -56,9 +64,9 @@ const updateReadMe = async () => {
           .map(
             ({ name }) => `\t- ${link(name, `#${name.replaceAll(".", "")}`)}`,
           ),
-      ].join("\n");
+      ].join(NEWLINE);
     })
-    .join("\n");
+    .join(NEWLINE);
 
   const content = await Promise.all(
     Object.entries(files).map(async ([filePath, dirents]) => {
@@ -66,29 +74,25 @@ const updateReadMe = async () => {
 
       const description = await Promise.all(
         dirents.map(async (d) => {
-          const content = await fs.readFile(join(d.path, d.name), {
+          const content = await fs.readFile(join(d.parentPath, d.name), {
             encoding: "utf8",
           });
 
-          return [`### ${d.name}`, code("typescript", content)].join("\n");
+          return [`### ${d.name}`, code("typescript", content)].join(NEWLINE);
         }),
       );
 
-      return [`## ${category}`, ...description].join("\n");
+      return [`## ${category}`, ...description].join(NEWLINE);
     }),
   );
 
-  // note: for convenience, only single linebreaks are used, and the final
-  // content is formatted with prettier
-  const readMe = [HEADER, "# Table of Contents", toc, ...content].join("\n");
+  const readMe = [HEADER, "# Table of Contents", toc, ...content].join(NEWLINE);
 
-  await fs.writeFile("./README.md", readMe, {
-    encoding: "utf8",
-  });
+  await fs.writeFile("./README.md", readMe, { encoding: "utf8" });
 
-  console.log("README.md has been generated successfully.");
+  console.log("✅ README.md has been generated successfully.");
 };
 
 updateReadMe().catch((e: unknown) => {
-  console.error("Failed to generate README.md:", e);
+  console.error("❌ Failed to generate README.md:", e);
 });
