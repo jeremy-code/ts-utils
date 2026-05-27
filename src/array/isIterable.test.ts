@@ -1,3 +1,5 @@
+import { describe, expect, it, test } from "vitest";
+
 import { isArrayLike, isIterable } from "./isIterable";
 
 describe("isIterable function", () => {

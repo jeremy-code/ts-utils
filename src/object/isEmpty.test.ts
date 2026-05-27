@@ -1,3 +1,5 @@
+import { describe, expect, it } from "vitest";
+
 import { isEmpty, isEmpty1 } from "./isEmpty";
 
 describe.each([

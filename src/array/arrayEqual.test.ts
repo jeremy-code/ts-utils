@@ -1,3 +1,5 @@
+import { describe, expect, it } from "vitest";
+
 import { arrayEqual, nestedArrayEqual } from "./arrayEqual";
 
 describe("arrayEqual", () => {

@@ -1,4 +1,5 @@
 import { STATUS_CODES } from "node:http";
+import { describe, expect, it } from "vitest";
 
 import { mapStatusCode } from "./mapStatusCode";
 

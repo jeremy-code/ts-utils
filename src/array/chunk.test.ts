@@ -1,3 +1,5 @@
+import { describe, expect, it } from "vitest";
+
 import { chunk, chunk1 } from "./chunk";
 
 describe.each([

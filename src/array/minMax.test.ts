@@ -1,3 +1,5 @@
+import { describe, expect, it } from "vitest";
+
 import { minMax } from "./minMax";
 
 describe("minmax function", () => {

@@ -1,3 +1,5 @@
+import { describe, expect, it } from "vitest";
+
 import { omit, omit1, pick } from "./pick";
 
 describe("pick", () => {

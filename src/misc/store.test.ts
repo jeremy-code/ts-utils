@@ -1,3 +1,5 @@
+import { describe, expect, it, vitest } from "vitest";
+
 import { createStore } from "./store";
 
 describe("createStore function", () => {

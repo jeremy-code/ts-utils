@@ -1,4 +1,4 @@
-import type { Mock } from "vitest";
+import { beforeEach, describe, expect, it, vitest, type Mock } from "vitest";
 
 import { debounce } from "./debounce";
 

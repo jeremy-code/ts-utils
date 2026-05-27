@@ -1,3 +1,5 @@
+import { describe, expect, it } from "vitest";
+
 import { createRangeMapper } from "./createRangeMapper";
 
 describe("createRangeMapper function", () => {

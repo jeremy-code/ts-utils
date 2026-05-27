@@ -1,3 +1,5 @@
+import { describe, expect, test } from "vitest";
+
 import { approximateRational } from "./approximateRational";
 
 const RATIONAL_CASES = [

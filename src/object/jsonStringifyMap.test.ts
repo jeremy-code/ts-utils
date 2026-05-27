@@ -1,3 +1,5 @@
+import { describe, expect, it } from "vitest";
+
 import { mapReplacer, mapReviver } from "./jsonStringifyMap";
 
 describe("mapReplacer and mapReviver", () => {

@@ -1,3 +1,5 @@
+import { describe, expect, it } from "vitest";
+
 import { mean, median, mode, standardDeviation, variance } from "./statistics";
 
 describe("mean function", () => {

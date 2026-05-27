@@ -1,3 +1,5 @@
+import { describe, expect, it } from "vitest";
+
 import { formatOrdinal } from "./formatOrdinal";
 
 describe("formatOrdinal function", () => {

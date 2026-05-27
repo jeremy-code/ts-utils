@@ -1,4 +1,6 @@
-import { shallowEqual } from "./shallowEqual"; // Adjust the import path as needed
+import { describe, expect, it } from "vitest";
+
+import { shallowEqual } from "./shallowEqual";
 
 describe("shallowCompare", () => {
   it("returns true for two identical objects", () => {

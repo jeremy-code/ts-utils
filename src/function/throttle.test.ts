@@ -1,3 +1,5 @@
+import { describe, expect, it, vitest } from "vitest";
+
 import { throttle } from "./throttle";
 
 describe("throttle", () => {
