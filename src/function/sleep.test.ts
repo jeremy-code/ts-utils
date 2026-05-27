@@ -1,7 +1,7 @@
 import { sleep } from "./sleep";
 
 describe("sleep", () => {
-  jest.useFakeTimers();
+  vitest.useFakeTimers();
 
   it("resolves after the specified time", async () => {
     const ms = 500;
@@ -9,7 +9,7 @@ describe("sleep", () => {
 
     const sleepPromise = sleep(ms);
 
-    jest.advanceTimersByTime(ms);
+    vitest.advanceTimersByTime(ms);
 
     await sleepPromise;
 
@@ -22,7 +22,7 @@ describe("sleep", () => {
 
     const sleepPromise = sleep();
 
-    jest.advanceTimersByTime(0);
+    vitest.advanceTimersByTime(0);
 
     await sleepPromise;
 

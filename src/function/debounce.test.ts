@@ -1,18 +1,20 @@
+import type { Mock } from "vitest";
+
 import { debounce } from "./debounce";
 
 describe("debounce", () => {
-  let functionToDebounce: jest.Mock;
+  let functionToDebounce: Mock;
 
   beforeEach(() => {
-    jest.useFakeTimers();
-    functionToDebounce = jest.fn();
+    vitest.useFakeTimers();
+    functionToDebounce = vitest.fn();
   });
 
   it("delays execution", () => {
     const debouncedFunction = debounce(functionToDebounce, 1000);
     debouncedFunction();
     expect(functionToDebounce).not.toHaveBeenCalled();
-    jest.runAllTimers();
+    vitest.runAllTimers();
     expect(functionToDebounce).toHaveBeenCalledTimes(1);
   });
 
@@ -20,7 +22,7 @@ describe("debounce", () => {
     const debouncedFunction = debounce(functionToDebounce, 1000);
     debouncedFunction();
     debouncedFunction();
-    jest.runAllTimers();
+    vitest.runAllTimers();
     expect(functionToDebounce).toHaveBeenCalledTimes(1);
   });
 
@@ -28,7 +30,7 @@ describe("debounce", () => {
     const debouncedFunction = debounce(functionToDebounce, 1000, true);
     debouncedFunction();
     expect(functionToDebounce).toHaveBeenCalledTimes(1);
-    jest.runAllTimers();
+    vitest.runAllTimers();
     expect(functionToDebounce).toHaveBeenCalledTimes(1); // Still once because of immediate flag
   });
 
@@ -36,7 +38,7 @@ describe("debounce", () => {
     const debouncedFunction = debounce(functionToDebounce, 1000);
     const args = ["arg1", 2, true];
     debouncedFunction(...args);
-    jest.runAllTimers();
+    vitest.runAllTimers();
     expect(functionToDebounce).toHaveBeenCalledWith(...args);
   });
 
@@ -44,7 +46,7 @@ describe("debounce", () => {
     const context = { value: 42 };
     const debouncedFunction = debounce(functionToDebounce.bind(context), 1000);
     debouncedFunction();
-    jest.runAllTimers();
+    vitest.runAllTimers();
     expect(functionToDebounce).toHaveBeenLastCalledWith();
     expect(functionToDebounce.mock.instances[0]).toBe(context);
   });

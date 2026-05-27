@@ -14,7 +14,7 @@ describe("createStore function", () => {
 
   it("updates the state and notifies listeners", () => {
     const store = createStore({ count: 0 });
-    const listener = jest.fn();
+    const listener = vitest.fn();
     store.subscribe(listener);
     store.update({ count: 1 });
     expect(store.getSnapshot()).toEqual({ count: 1 });
@@ -23,7 +23,7 @@ describe("createStore function", () => {
 
   it("removes listeners correctly", () => {
     const store = createStore({ count: 0 });
-    const listener = jest.fn();
+    const listener = vitest.fn();
     const unsubscribe = store.subscribe(listener);
     unsubscribe();
     store.update({ count: 1 });

@@ -25,7 +25,7 @@ export type TypeofType<T extends Typeof> = {
   symbol: symbol;
   undefined: undefined;
   object: object | null;
-  // eslint-disable-next-line @typescript-eslint/ban-types -- Not useful, but for exhaustiveness
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type -- Not useful, but for exhaustiveness
   function: Function; // Can be a class or a function
 }[T];
 

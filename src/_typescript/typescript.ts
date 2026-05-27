@@ -61,7 +61,6 @@ export type Char = Letter | Digit;
  * type Prettify<T> = { [K in keyof T]: T[K] } & unknown;
  * ```
  */
-// eslint-disable-next-line @typescript-eslint/ban-types -- {} or unknown is necessary for compiler
 export type Prettify<T> = { [K in keyof T]: T[K] } & {};
 
 declare const brand: unique symbol;

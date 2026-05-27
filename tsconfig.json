@@ -2,6 +2,8 @@
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig.json to read more about this file */
 
+    "types": ["vitest/globals"],
+
     /* Projects */
     "target": "ESNext",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],

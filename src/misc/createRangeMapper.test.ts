@@ -50,12 +50,10 @@ describe("createRangeMapper function", () => {
 
     describe("should throw an error for invalid values", () => {
       it.each([
-        [101, `"Invalid value with no corresponding range: 101"`],
-        [-1, `"Invalid value with no corresponding range: -1"`],
+        [101, "Invalid value with no corresponding range: 101"],
+        [-1, "Invalid value with no corresponding range: -1"],
       ])("for %d, throws an error", (value: number, error: string) => {
-        expect(() =>
-          calculateLetterGrade(value),
-        ).toThrowErrorMatchingInlineSnapshot(error);
+        expect(() => calculateLetterGrade(value)).toThrow(error);
       });
     });
   });
@@ -88,12 +86,10 @@ describe("createRangeMapper function", () => {
 
     describe("should throw an error for invalid values", () => {
       it.each([
-        [101, `"Invalid value with no corresponding range: 101"`],
-        [-1, `"Invalid value with no corresponding range: -1"`],
+        [101, "Invalid value with no corresponding range: 101"],
+        [-1, "Invalid value with no corresponding range: -1"],
       ])("for %d, throws an error", (value: number, error: string) => {
-        expect(() =>
-          calculatePassFail(value),
-        ).toThrowErrorMatchingInlineSnapshot(error);
+        expect(() => calculatePassFail(value)).toThrow(error);
       });
     });
   });
