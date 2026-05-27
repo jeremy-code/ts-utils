@@ -1,51 +1,57 @@
 # ts-utils [![GitHub Actions badge](https://github.com/jeremy-code/ts-utils/actions/workflows/ci.yml/badge.svg)](https://github.com/jeremy-code/ts-utils/actions/workflows/ci.yml) [![License](https://img.shields.io/github/license/jeremy-code/ts-utils)](LICENSE)
+
 # Table of Contents
+
 - [string](#string)
-	- [capitalize.ts](#capitalizets)
-	- [randomString.ts](#randomStringts)
-	- [segment.ts](#segmentts)
-	- [truncateMiddle.ts](#truncateMiddlets)
+  - [capitalize.ts](#capitalizets)
+  - [randomString.ts](#randomStringts)
+  - [segment.ts](#segmentts)
+  - [truncateMiddle.ts](#truncateMiddlets)
 - [object](#object)
-	- [isEmpty.ts](#isEmptyts)
-	- [isPlainObject.ts](#isPlainObjectts)
-	- [jsonStringifyMap.ts](#jsonStringifyMapts)
-	- [parseFormData.ts](#parseFormDatats)
-	- [parseUrlSearchParams.ts](#parseUrlSearchParamsts)
-	- [pick.ts](#pickts)
-	- [shallowEqual.ts](#shallowEqualts)
+  - [isEmpty.ts](#isEmptyts)
+  - [isPlainObject.ts](#isPlainObjectts)
+  - [jsonStringifyMap.ts](#jsonStringifyMapts)
+  - [parseFormData.ts](#parseFormDatats)
+  - [parseUrlSearchParams.ts](#parseUrlSearchParamsts)
+  - [pick.ts](#pickts)
+  - [shallowEqual.ts](#shallowEqualts)
 - [number](#number)
-	- [randomNum.ts](#randomNumts)
-	- [relativeError.ts](#relativeErrorts)
-	- [statistics.ts](#statisticsts)
+  - [randomNum.ts](#randomNumts)
+  - [relativeError.ts](#relativeErrorts)
+  - [statistics.ts](#statisticsts)
 - [misc](#misc)
-	- [assertIsError.ts](#assertIsErrorts)
-	- [assertNever.ts](#assertNeverts)
-	- [createRangeMapper.ts](#createRangeMapperts)
-	- [mapStatusCode.ts](#mapStatusCodets)
-	- [store.ts](#storets)
+  - [assertIsError.ts](#assertIsErrorts)
+  - [assertNever.ts](#assertNeverts)
+  - [createRangeMapper.ts](#createRangeMapperts)
+  - [mapStatusCode.ts](#mapStatusCodets)
+  - [store.ts](#storets)
 - [math](#math)
-	- [Rational.ts](#Rationalts)
-	- [approximateRational.ts](#approximateRationalts)
+  - [Rational.ts](#Rationalts)
+  - [approximateRational.ts](#approximateRationalts)
+  - [gcd.ts](#gcdts)
 - [function](#function)
-	- [debounce.ts](#debouncets)
-	- [sleep.ts](#sleepts)
-	- [throttle.ts](#throttlets)
+  - [debounce.ts](#debouncets)
+  - [sleep.ts](#sleepts)
+  - [throttle.ts](#throttlets)
 - [formatting](#formatting)
-	- [formatBytes.ts](#formatBytests)
-	- [formatMs.ts](#formatMsts)
-	- [formatNumber.ts](#formatNumberts)
-	- [formatOrdinal.ts](#formatOrdinalts)
-	- [uri.ts](#urits)
+  - [formatBytes.ts](#formatBytests)
+  - [formatMs.ts](#formatMsts)
+  - [formatNumber.ts](#formatNumberts)
+  - [formatOrdinal.ts](#formatOrdinalts)
+  - [uri.ts](#urits)
 - [color](#color)
-	- [color.ts](#colorts)
+  - [color.ts](#colorts)
 - [array](#array)
-	- [arrayEqual.ts](#arrayEqualts)
-	- [chunk.ts](#chunkts)
-	- [isIterable.ts](#isIterablets)
-	- [minMax.ts](#minMaxts)
-	- [range.ts](#rangets)
+  - [arrayEqual.ts](#arrayEqualts)
+  - [chunk.ts](#chunkts)
+  - [isIterable.ts](#isIterablets)
+  - [minMax.ts](#minMaxts)
+  - [range.ts](#rangets)
+
 ## string
+
 ### capitalize.ts
+
 ```typescript
 /**
  * @file Utility functions for the intrinsic string manipulation types in
@@ -82,10 +88,11 @@ export const uppercase = <T extends string>(str: T) =>
 
 export const lowercase = <T extends string>(str: T) =>
   str.toLowerCase() as Lowercase<T>;
-
 ```
+
 ### randomString.ts
-```typescript
+
+````typescript
 const CHARACTERS =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -112,9 +119,10 @@ export const randomString = (length: number, characters = CHARACTERS) =>
     crypto.getRandomValues(new Uint8Array(length)),
     (byte) => characters[byte % characters.length],
   ).join("");
+````
 
-```
 ### segment.ts
+
 ```typescript
 /**
  * Using Intl.Segmenter to segment a string into an array of substrings, either
@@ -153,9 +161,10 @@ export const segmentByWord = (
     // e.g. arr.reduce((acc, s) => (s.isWordLike ? [...acc, s.segment] : acc), [])
     .filter((s) => s.isWordLike)
     .map((s) => s.segment);
-
 ```
+
 ### truncateMiddle.ts
+
 ```typescript
 // Use text-overflow: ellipsis in CSS to truncate text at the end of a string.
 
@@ -183,10 +192,12 @@ export const truncateMiddle = (
     placeholder +
     str.slice(-Math.floor((targetLength - placeholder.length) / 2))
   : str; // if targetLength is less than or equal to str.length, string will be returned as-is
-
 ```
+
 ## object
+
 ### isEmpty.ts
+
 ```typescript
 /**
  * Roughly equivalent to `lodash.isempty`, which is the 2489th most popular
@@ -212,10 +223,11 @@ export const isEmpty1 = (value: unknown) =>
   : value instanceof Map || value instanceof Set ? value.size === 0
   : typeof value === "object" ? Object.entries(value).length === 0
   : false);
-
 ```
+
 ### isPlainObject.ts
-```typescript
+
+````typescript
 /**
  * Walks up the prototype chain to find the base prototype, then compares it to
  * the original prototype. If they are the same, it is a plain object.
@@ -253,9 +265,10 @@ export function isPlainObject(obj: unknown) {
 
   return proto === baseProto;
 }
+````
 
-```
 ### jsonStringifyMap.ts
+
 ```typescript
 /**
  * Unfortunately, JSON.stringify does not support Native ES6 Map. A proposal was
@@ -300,9 +313,10 @@ export const mapReplacer = (_key: string, value: unknown) =>
 
 export const mapReviver = (_key: string, value: unknown) =>
   isObjectifiedMap(value) ? new Map(value.value) : value;
-
 ```
+
 ### parseFormData.ts
+
 ```typescript
 /**
  * Parses FormData object into a plain object.
@@ -318,9 +332,10 @@ export const parseFormData = (formData: FormData) =>
     }
     return acc;
   }, {});
-
 ```
+
 ### parseUrlSearchParams.ts
+
 ```typescript
 /**
  * Parse URLSearchParams to plain object.
@@ -337,9 +352,10 @@ export const parseUrlSearchParams = (urlSearchParams: URLSearchParams) =>
     },
     {},
   );
-
 ```
+
 ### pick.ts
+
 ```typescript
 /**
  * @file pick() and omit() utility functions for objects, equivalent to the
@@ -384,9 +400,10 @@ export const omit1 = <T extends { [key: string]: unknown }, K extends keyof T>(
   Object.fromEntries(
     Object.entries(object).filter(([key]) => !keys.includes(key as K)),
   ) as Omit<T, K>;
-
 ```
+
 ### shallowEqual.ts
+
 ```typescript
 /**
  * Compare two objects one level deep (shallow comparison / Object.is)
@@ -420,10 +437,12 @@ export const shallowEqual = <T extends Record<string, unknown>>(
     keys1.every((key) => Object.is(obj1[key], obj2[key]))
   );
 };
-
 ```
+
 ## number
+
 ### randomNum.ts
+
 ```typescript
 /**
  * Generates a random integer between min and max (inclusive) using Math.random.
@@ -440,9 +459,10 @@ export const randomNum = (min: number, max: number) =>
       (Math.floor(max) - Math.ceil(min) + 1) +
       Math.ceil(min),
   );
-
 ```
+
 ### relativeError.ts
+
 ```typescript
 export const relativeError = (actual: number, expected: number) =>
   // if expected is 0, returns NaN
@@ -452,9 +472,10 @@ export const relativeError = (actual: number, expected: number) =>
 // probably clearer
 export const absoluteError = (actual: number, expected: number) =>
   Math.abs(actual - expected);
-
 ```
+
 ### statistics.ts
+
 ```typescript
 /**
  * @file The basic statistics functions for numbers, expanding on what the Math
@@ -534,10 +555,12 @@ export const standardDeviation = (...values: number[]) => {
 
   return Math.sqrt(variance);
 };
-
 ```
+
 ## misc
+
 ### assertIsError.ts
+
 ```typescript
 /**
  * Useful in try/catch blocks to ensure `error: unknown` is an Error without
@@ -550,9 +573,10 @@ export function assertIsError(error: unknown): asserts error is Error {
     });
   }
 }
-
 ```
+
 ### assertNever.ts
+
 ```typescript
 /**
  * Enforces that a value is never reached (e.g. in a switch statement). Useful
@@ -565,9 +589,10 @@ export function assertNever(value: never, message?: string): never {
     cause: value,
   });
 }
-
 ```
+
 ### createRangeMapper.ts
+
 ```typescript
 type Range = [start: number, end: number];
 
@@ -595,9 +620,10 @@ export const createRangeMapper = <T extends PropertyKey>(
     return entry[0] as T;
   };
 };
-
 ```
+
 ### mapStatusCode.ts
+
 ```typescript
 import { STATUS_CODES } from "node:http";
 
@@ -656,9 +682,10 @@ const mapStatusCode = (input: keyof typeof STATUS_CODES): Status => {
 };
 
 export { mapStatusCode, type Status, type StatusClass };
-
 ```
+
 ### store.ts
+
 ```typescript
 /**
  * Intended for use in React with `useSyncExternalStore()`. For more complex use
@@ -693,10 +720,12 @@ export function createStore<S>(initialState: S | (() => S)) {
 
 // Would have to be initialized somewhere to be used:
 export const store = createStore({ count: 0 });
-
 ```
+
 ## math
+
 ### Rational.ts
+
 ```typescript
 import { approximateRational } from "./approximateRational";
 
@@ -739,9 +768,10 @@ class Rational {
 }
 
 export { Rational };
-
 ```
+
 ### approximateRational.ts
+
 ```typescript
 const DEFAULT_MAX_ITERATIONS = 10;
 const DEFAULT_TOLERANCE = 1e-10; // = 1/10_000_000_000
@@ -850,10 +880,37 @@ const approximateRational = (
 };
 
 export { approximateRational };
-
 ```
+
+### gcd.ts
+
+```typescript
+const gcd = (a: number, b: number) => {
+  if (!Number.isInteger(a)) {
+    throw new Error("a is not an integer");
+  }
+  if (!Number.isInteger(b)) {
+    throw new Error("b is not an integer");
+  }
+
+  if (b === 0) {
+    return a;
+  }
+
+  while (b !== 0) {
+    [a, b] = [b, a % b];
+  }
+
+  return a;
+};
+
+export { gcd };
+```
+
 ## function
+
 ### debounce.ts
+
 ```typescript
 export function debounce<T extends (...args: Parameters<T>) => ReturnType<T>>(
   callback: T,
@@ -875,15 +932,17 @@ export function debounce<T extends (...args: Parameters<T>) => ReturnType<T>>(
     if (callNow) callback.apply(this, args);
   };
 }
-
 ```
+
 ### sleep.ts
+
 ```typescript
 export const sleep = (ms?: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
-
 ```
+
 ### throttle.ts
+
 ```typescript
 /**
  * Throttle a function to be called at most once every `ms` milliseconds.
@@ -903,10 +962,12 @@ export function throttle<T extends (...args: Parameters<T>) => ReturnType<T>>(
     }
   };
 }
-
 ```
+
 ## formatting
+
 ### formatBytes.ts
+
 ```typescript
 /**
  * @file Functions to format bytes into human-readable strings using
@@ -994,9 +1055,10 @@ export const formatBytesBinary = (
     ...options,
   }).format(value);
 };
-
 ```
+
 ### formatMs.ts
+
 ```typescript
 /**
  * @file Format milliseconds into human-readable strings. Similar to packages
@@ -1095,9 +1157,10 @@ export const formatMsExact = (
       return acc;
     }, []),
   );
-
 ```
+
 ### formatNumber.ts
+
 ```typescript
 /**
  * Coerces a value to a number and formats it using the provided options.
@@ -1106,9 +1169,10 @@ export const formatNumber = (
   value: unknown,
   ...params: ConstructorParameters<Intl.NumberFormatConstructor>
 ) => new Intl.NumberFormat(...params).format(Number(value));
-
 ```
+
 ### formatOrdinal.ts
+
 ```typescript
 // Only true for English, becomes significantly more complex for other languages
 const SUFFIXES = {
@@ -1141,9 +1205,10 @@ export const formatOrdinal = (
   // of Intl.PluralRules. Feel free to add as an parameter if needed.
   return `${num.toLocaleString(locales, options)}${suffix}`;
 };
-
 ```
+
 ### uri.ts
+
 ```typescript
 /**
  * A tagged template literal for encoding URI components.
@@ -1158,10 +1223,12 @@ export const uri = (
   // valid values for encodeURIComponent
   ...values: (string | number | boolean)[]
 ) => String.raw({ raw: template }, ...values.map((v) => encodeURIComponent(v)));
-
 ```
+
 ## color
+
 ### color.ts
+
 ```typescript
 /**
  * Some color utilities. Unfortunately, color manipulation in general is really
@@ -1203,10 +1270,12 @@ export const hexToRgb = (hex: string): RGB => {
 
 export const rgbToHex = ({ r, g, b }: RGB) =>
   `#${[r, g, b].map((x) => x.toString(16).padStart(2, "0")).join("")}`;
-
 ```
+
 ## array
+
 ### arrayEqual.ts
+
 ```typescript
 export const arrayEqual = (value1: unknown[], value2: unknown[]) =>
   value1.length === value2.length &&
@@ -1226,9 +1295,10 @@ export const nestedArrayEqual = <T>(value1: T[], value2: T[]): boolean => {
       : Object.is(val, value2Entry);
   });
 };
-
 ```
+
 ### chunk.ts
+
 ```typescript
 // Immutable approach
 export const chunk = <T>(items: T[], size: number) =>
@@ -1246,9 +1316,10 @@ export const chunk1 = <T>(items: T[], size: number) => {
   }
   return result;
 };
-
 ```
+
 ### isIterable.ts
+
 ```typescript
 /**
  * Check if a value is an iterable object (implements the iterable protocol).
@@ -1275,9 +1346,10 @@ export const isArrayLike = (value: unknown): value is ArrayLike<unknown> =>
   value !== null && // typeof null === 'object'
   "length" in value &&
   typeof value.length === "number";
-
 ```
+
 ### minMax.ts
+
 ```typescript
 // Explicit type to name tuple elements
 type Range = [min: number, max: number];
@@ -1301,9 +1373,10 @@ export const minMax = (arr: number[]) =>
     // By default, [min, max] = [Infinity, -Infinity] to handle empty arrays
     [Infinity, -Infinity],
   );
-
 ```
+
 ### range.ts
+
 ```typescript
 /**
  * Generate an array of numbers from start to end (inclusive) with optional step
@@ -1331,5 +1404,4 @@ export const range = (start: number, end: number, step = 1) => {
    */
   return Array.from({ length }, (_, index) => start + index * step);
 };
-
 ```
