@@ -1,11 +1,11 @@
 import { STATUS_CODES } from "node:http";
-import { describe, expect, it } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { mapStatusCode } from "./mapStatusCode";
 
 describe("mapStatusCode function", () => {
   describe("should return 500 error on invalid status code", () => {
-    it.each([0, "000", 600])("should not throw for %s", (statusCode) => {
+    test.each([0, "000", 600])("should not throw for %s", (statusCode) => {
       expect(mapStatusCode(statusCode)).toStrictEqual({
         ok: false,
         status: 500,
@@ -16,7 +16,7 @@ describe("mapStatusCode function", () => {
   });
 
   describe("should return valid status object for number", () => {
-    it.each([
+    test.each([
       [
         100,
         {
@@ -63,7 +63,7 @@ describe("mapStatusCode function", () => {
   });
 
   describe("should return valid status object for string", () => {
-    it.each([
+    test.each([
       [
         "100",
         {

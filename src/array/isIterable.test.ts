@@ -1,10 +1,10 @@
-import { describe, expect, it, test } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { isArrayLike, isIterable } from "./isIterable";
 
 describe("isIterable function", () => {
   describe("returns true for iterable objects", () => {
-    it.each([
+    test.each([
       ["Array", []],
       ["Set", new Set()],
       ["Map", new Map()],
@@ -16,7 +16,7 @@ describe("isIterable function", () => {
   });
 
   describe("returns false for non-iterable objects", () => {
-    it.each([
+    test.each([
       ["plain object", {}],
       ["null", null],
       ["undefined", undefined],

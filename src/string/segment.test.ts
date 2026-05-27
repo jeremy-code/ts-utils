@@ -1,9 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { segment, segmentByWord } from "./segment";
 
 describe("segment function", () => {
-  it("segment a sentence by graphemes", () => {
+  test("segment a sentence by graphemes", () => {
     const input = "abc def";
     const segments = segment(input);
     expect(segments).toHaveLength(input.length);
@@ -11,7 +11,7 @@ describe("segment function", () => {
     expect(segments).toEqual(["a", "b", "c", " ", "d", "e", "f"]);
   });
 
-  it("segment an emoji by graphemes", () => {
+  test("segment an emoji by graphemes", () => {
     // input.length === 4, but it's a single emoji
     const input = "🇬🇧";
     const segments = segment(input);
@@ -20,7 +20,7 @@ describe("segment function", () => {
   });
 
   // hindi script can combine multiple characters into a single grapheme
-  it("segment a word in Hindi", () => {
+  test("segment a word in Hindi", () => {
     // input.length === 8
     const input = "अनुच्छेद";
     const segments = segment(input, "hi");
@@ -33,7 +33,7 @@ describe("segment function", () => {
     expect(segments).toEqual(["अ", "नु", "च्छे", "द"]);
   });
 
-  it("segment a sentence by words", () => {
+  test("segment a sentence by words", () => {
     const input = "Hello, world!";
     const segments = segment(input, undefined, { granularity: "word" });
     expect(segments).toHaveLength(5);
@@ -42,7 +42,7 @@ describe("segment function", () => {
 });
 
 describe("segmentByWord function", () => {
-  it("segment a sentence by words", () => {
+  test("segment a sentence by words", () => {
     const input = "Hello, world!";
     const segments = segmentByWord(input);
     expect(segments).toHaveLength(2);
@@ -50,7 +50,7 @@ describe("segmentByWord function", () => {
   });
 
   // making sure it filters out puncutation
-  it("segment a sentence by words in Spanish", () => {
+  test("segment a sentence by words in Spanish", () => {
     const input = "¡Hola, mundo!";
     const segments = segmentByWord(input, "es");
     expect(segments).toHaveLength(2);

@@ -1,4 +1,4 @@
-import { describe, expect, it, test } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { Rational } from "./Rational";
 
@@ -98,7 +98,7 @@ describe("Rational", () => {
       },
     );
 
-    it.each([
+    test.each([
       { numerator: 0xff, denominator: 0x10, radix: 16, expected: "ff/10" },
     ])(
       "formats ($numerator, $denominator) with radix $radix",
@@ -119,12 +119,12 @@ describe("Rational", () => {
       expect(new Rational(numerator, denominator).valueOf()).toBe(expected);
     });
 
-    it("supports comparisons", () => {
+    test("supports comparisons", () => {
       expect(new Rational(1, 2) > new Rational(1, 3)).toBe(true);
       expect(new Rational(1, 3) < new Rational(1, 2)).toBe(true);
     });
 
-    it("supports arithmetic via coercion", () => {
+    test("supports arithmetic via coercion", () => {
       // @ts-expect-error intentional coercion
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       expect(new Rational(1, 4) + new Rational(1, 4)).toBe(0.5);

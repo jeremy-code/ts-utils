@@ -1,9 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { randomNum } from "./randomNum";
 
 describe("randomNum", () => {
-  it("generates a number within the specified range", () => {
+  test("generates a number within the specified range", () => {
     const min = 1;
     const max = 100;
     const result = randomNum(min, max);

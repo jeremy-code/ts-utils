@@ -1,10 +1,10 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { assertNever } from "./assertNever";
 
 describe("assertNever function", () => {
   describe("should throw an error", () => {
-    it.each([
+    test.each([
       ["object", {}],
       ["null", null],
       ["undefined", undefined],

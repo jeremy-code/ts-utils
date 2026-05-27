@@ -1,22 +1,22 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { parseUrlSearchParams } from "./parseUrlSearchParams";
 
 describe("parseUrlSearchParams", () => {
-  it("should return an empty object when there are no search parameters", () => {
+  test("should return an empty object when there are no search parameters", () => {
     const urlSearchParams = new URLSearchParams();
     const parsed = parseUrlSearchParams(urlSearchParams);
     expect(parsed).toEqual({});
   });
 
-  it("should handle a single parameter with a single value", () => {
+  test("should handle a single parameter with a single value", () => {
     const urlSearchParams = new URLSearchParams();
     urlSearchParams.append("key", "value");
     const parsed = parseUrlSearchParams(urlSearchParams);
     expect(parsed).toEqual({ key: "value" });
   });
 
-  it("should handle multiple parameters with single values", () => {
+  test("should handle multiple parameters with single values", () => {
     const urlSearchParams = new URLSearchParams();
     urlSearchParams.append("first", "value1");
     urlSearchParams.append("second", "value2");
@@ -24,7 +24,7 @@ describe("parseUrlSearchParams", () => {
     expect(parsed).toEqual({ first: "value1", second: "value2" });
   });
 
-  it("should combine multiple values for the same parameter into an array", () => {
+  test("should combine multiple values for the same parameter into an array", () => {
     const urlSearchParams = new URLSearchParams();
     urlSearchParams.append("key", "value1");
     urlSearchParams.append("key", "value2");
@@ -32,7 +32,7 @@ describe("parseUrlSearchParams", () => {
     expect(parsed).toEqual({ key: ["value1", "value2"] });
   });
 
-  it("should handle mixed single and multiple values for parameters", () => {
+  test("should handle mixed single and multiple values for parameters", () => {
     const urlSearchParams = new URLSearchParams();
     urlSearchParams.append("single", "value");
     urlSearchParams.append("multi", "value1");

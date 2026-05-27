@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { isEmpty, isEmpty1 } from "./isEmpty";
 
@@ -7,7 +7,7 @@ describe.each([
   ["isEmpty1", isEmpty1],
 ])("%s", (_name, fn) => {
   describe("returns true for empty values", () => {
-    it.each([
+    test.each([
       [null, true],
       [undefined, true],
       [[], true],
@@ -21,7 +21,7 @@ describe.each([
   });
 
   describe("returns false for non-empty values", () => {
-    it.each([
+    test.each([
       [0, false],
       [1, false],
       [false, false],

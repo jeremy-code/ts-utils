@@ -1,10 +1,10 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { arrayEqual, nestedArrayEqual } from "./arrayEqual";
 
 describe("arrayEqual", () => {
   describe("returns true when arrays are equal", () => {
-    it.each([
+    test.each([
       [
         [1, 2, 3],
         [1, 2, 3],
@@ -31,7 +31,7 @@ describe("arrayEqual", () => {
 
   describe("returns false when arrays are not equal", () => {
     describe("returns false when arrays have same size and different values", () => {
-      it.each([
+      test.each([
         // same size, different values
         [
           [1, 2, 3],
@@ -57,7 +57,7 @@ describe("arrayEqual", () => {
     });
 
     describe("returns false when arrays have different size", () => {
-      it.each([
+      test.each([
         [
           [1, 2, 3],
           [1, 2],
@@ -85,7 +85,7 @@ describe("arrayEqual", () => {
 
 describe("nestedArrayEqual", () => {
   describe("returns true when arrays are equal", () => {
-    it.each([
+    test.each([
       [
         [
           [1, 2, 3],
@@ -102,7 +102,7 @@ describe("nestedArrayEqual", () => {
   });
 
   describe("returns false when arrays are not equal", () => {
-    it.each([
+    test.each([
       [
         [
           [1, 2, 3],

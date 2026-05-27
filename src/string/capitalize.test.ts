@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import {
   capitalize,
@@ -12,7 +12,7 @@ describe.each([
   ["capitalize1", capitalize1],
   ["capitalize2", capitalize2],
 ])("%s function", (_name, fn) => {
-  it.each([
+  test.each([
     ["hello", "Hello"],
     ["world", "World"],
     ["testString", "TestString"],
@@ -23,7 +23,7 @@ describe.each([
 });
 
 describe("uncapitalize function", () => {
-  it.each([
+  test.each([
     ["Hello", "hello"],
     ["World", "world"],
     ["TestString", "testString"],

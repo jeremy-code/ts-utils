@@ -1,10 +1,10 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { assertIsError } from "./assertIsError";
 
 describe("assertIsError function", () => {
   describe("should not throw an error when given an Error object", () => {
-    it.each([
+    test.each([
       // Error objects per https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects#error_objects
       new Error(),
       new AggregateError([new Error()]),
@@ -20,7 +20,7 @@ describe("assertIsError function", () => {
   });
 
   describe("should throw an error when given a non-Error object", () => {
-    it.each([
+    test.each([
       ["object", {}],
       ["error-like object", { name: "Error", message: "error" }],
       ["null", null],

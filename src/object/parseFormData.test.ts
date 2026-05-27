@@ -1,9 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { parseFormData } from "./parseFormData";
 
 describe("parseFormData", () => {
-  it("parses FormData with single values correctly", () => {
+  test("parses FormData with single values correctly", () => {
     const formData = new FormData();
     formData.append("key1", "value1");
     formData.append("key2", "value2");
@@ -16,7 +16,7 @@ describe("parseFormData", () => {
     expect(parseFormData(formData)).toEqual(expected);
   });
 
-  it("parses FormData with multiple values for the same key correctly", () => {
+  test("parses FormData with multiple values for the same key correctly", () => {
     const formData = new FormData();
     formData.append("key1", "value1");
     formData.append("key1", "value2");
@@ -28,7 +28,7 @@ describe("parseFormData", () => {
     expect(parseFormData(formData)).toEqual(expected);
   });
 
-  it("handles mixed single and multiple values correctly", () => {
+  test("handles mixed single and multiple values correctly", () => {
     const formData = new FormData();
     formData.append("key1", "value1");
     formData.append("key2", "value2");

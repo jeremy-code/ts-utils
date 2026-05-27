@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { createRangeMapper } from "./createRangeMapper";
 
@@ -13,7 +13,7 @@ describe("createRangeMapper function", () => {
     });
 
     describe("should return correct letter grade on lower limit", () => {
-      it.each([
+      test.each([
         [100, "A"],
         [90, "A"],
         [80, "B"],
@@ -26,7 +26,7 @@ describe("createRangeMapper function", () => {
     });
 
     describe("should return correct letter grade on upper limit", () => {
-      it.each([
+      test.each([
         [99, "A"],
         [91, "A"],
         [81, "B"],
@@ -39,7 +39,7 @@ describe("createRangeMapper function", () => {
     });
 
     describe("should return correct letter grade on middle values", () => {
-      it.each([
+      test.each([
         [95, "A"],
         [85, "B"],
         [75, "C"],
@@ -51,7 +51,7 @@ describe("createRangeMapper function", () => {
     });
 
     describe("should throw an error for invalid values", () => {
-      it.each([
+      test.each([
         [101, "Invalid value with no corresponding range: 101"],
         [-1, "Invalid value with no corresponding range: -1"],
       ])("for %d, throws an error", (value: number, error: string) => {
@@ -67,7 +67,7 @@ describe("createRangeMapper function", () => {
     });
 
     describe("should return correct pass/fail grade on limits", () => {
-      it.each([
+      test.each([
         [100, "Pass"],
         [70, "Pass"],
         [69, "Fail"],
@@ -78,7 +78,7 @@ describe("createRangeMapper function", () => {
     });
 
     describe("should return correct pass/fail grade on middle values", () => {
-      it.each([
+      test.each([
         [85, "Pass"],
         [60, "Fail"],
       ])("for %d, returns %s", (value: number, expected: string) => {
@@ -87,7 +87,7 @@ describe("createRangeMapper function", () => {
     });
 
     describe("should throw an error for invalid values", () => {
-      it.each([
+      test.each([
         [101, "Invalid value with no corresponding range: 101"],
         [-1, "Invalid value with no corresponding range: -1"],
       ])("for %d, throws an error", (value: number, error: string) => {

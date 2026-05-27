@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vitest, type Mock } from "vitest";
+import { beforeEach, describe, expect, test, vitest, type Mock } from "vitest";
 
 import { debounce } from "./debounce";
 
@@ -10,7 +10,7 @@ describe("debounce", () => {
     functionToDebounce = vitest.fn();
   });
 
-  it("delays execution", () => {
+  test("delays execution", () => {
     const debouncedFunction = debounce(functionToDebounce, 1000);
     debouncedFunction();
     expect(functionToDebounce).not.toHaveBeenCalled();
@@ -18,7 +18,7 @@ describe("debounce", () => {
     expect(functionToDebounce).toHaveBeenCalledTimes(1);
   });
 
-  it("only executes once within the delay period", () => {
+  test("only executes once within the delay period", () => {
     const debouncedFunction = debounce(functionToDebounce, 1000);
     debouncedFunction();
     debouncedFunction();
@@ -26,7 +26,7 @@ describe("debounce", () => {
     expect(functionToDebounce).toHaveBeenCalledTimes(1);
   });
 
-  it("handles immediate execution", () => {
+  test("handles immediate execution", () => {
     const debouncedFunction = debounce(functionToDebounce, 1000, true);
     debouncedFunction();
     expect(functionToDebounce).toHaveBeenCalledTimes(1);
@@ -34,7 +34,7 @@ describe("debounce", () => {
     expect(functionToDebounce).toHaveBeenCalledTimes(1); // Still once because of immediate flag
   });
 
-  it("properly passes parameters", () => {
+  test("properly passes parameters", () => {
     const debouncedFunction = debounce(functionToDebounce, 1000);
     const args = ["arg1", 2, true];
     debouncedFunction(...args);
@@ -42,7 +42,7 @@ describe("debounce", () => {
     expect(functionToDebounce).toHaveBeenCalledWith(...args);
   });
 
-  it("binds the correct `this` context", () => {
+  test("binds the correct `this` context", () => {
     const context = { value: 42 };
     const debouncedFunction = debounce(functionToDebounce.bind(context), 1000);
     debouncedFunction();

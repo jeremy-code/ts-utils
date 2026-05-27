@@ -1,10 +1,10 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { formatBytes, formatBytesBinary } from "./formatBytes";
 
 describe("formatBytes function", () => {
   describe("formats base SI units in bytes", () => {
-    it.each([
+    test.each([
       [1, "1 byte"],
       [1000, "1 kB"],
       [1_000_000, "1 MB"],
@@ -17,7 +17,7 @@ describe("formatBytes function", () => {
   });
 
   describe("formats zero and negative values in bytes", () => {
-    it.each([
+    test.each([
       [0, "0 byte"],
       [-0, "-0 byte"],
       [-1, "-1 byte"],
@@ -28,7 +28,7 @@ describe("formatBytes function", () => {
   });
 
   describe("formats non-finite values", () => {
-    it.each([
+    test.each([
       [NaN, "NaN byte"],
       [Infinity, "∞ byte"],
       [-Infinity, "-∞ byte"],
@@ -38,7 +38,7 @@ describe("formatBytes function", () => {
   });
 
   describe("formats bytes with locale and options formatting", () => {
-    it.each([
+    test.each([
       [1000, "de-DE", undefined, "1 kB"],
       [1_234_567, "de-DE", { maximumSignificantDigits: 3 }, "1,23 MB"],
     ])(
@@ -52,7 +52,7 @@ describe("formatBytes function", () => {
 
 describe("formatBytesBinary function", () => {
   describe("formats base binary units in bytes", () => {
-    it.each([
+    test.each([
       [1, "1 byte"],
       [1024, "1 kB"],
       [1_048_576, "1 MB"],
@@ -63,7 +63,7 @@ describe("formatBytesBinary function", () => {
       expect(formatBytesBinary(input)).toBe(expected);
     });
 
-    it.each([
+    test.each([
       [2 ** 0, "1 byte"],
       [2 ** 10, "1 kB"],
       [2 ** 20, "1 MB"],
@@ -76,7 +76,7 @@ describe("formatBytesBinary function", () => {
   });
 
   describe("formats zero and negative values in bytes", () => {
-    it.each([
+    test.each([
       [0, "0 byte"],
       [-0, "-0 byte"],
       [-1, "-1 byte"],
@@ -87,7 +87,7 @@ describe("formatBytesBinary function", () => {
   });
 
   describe("formats non-finite values", () => {
-    it.each([
+    test.each([
       [NaN, "NaN byte"],
       [Infinity, "∞ byte"],
       [-Infinity, "-∞ byte"],
@@ -97,7 +97,7 @@ describe("formatBytesBinary function", () => {
   });
 
   describe("formats bytes with locale and options formatting", () => {
-    it.each([
+    test.each([
       [1024, "de-DE", undefined, "1 kB"],
       [1_234_576, "de-DE", { maximumSignificantDigits: 3 }, "1,18 MB"],
     ])(

@@ -1,10 +1,10 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { isPlainObject } from "./isPlainObject";
 
 describe("isPlainObject", () => {
   describe("returns true for plain objects", () => {
-    it.each([[{}], [{ key: "value" }], [Object.create(null)]])(
+    test.each([[{}], [{ key: "value" }], [Object.create(null)]])(
       "returns true for plain object %p",
       (obj) => {
         expect(isPlainObject(obj)).toBe(true);
@@ -13,7 +13,7 @@ describe("isPlainObject", () => {
   });
 
   describe("returns false for primitives", () => {
-    it.each([
+    test.each([
       [null],
       [undefined],
       [1],
@@ -29,7 +29,7 @@ describe("isPlainObject", () => {
   describe("returns false for other objects", () => {
     class MyClass {}
 
-    it.each([
+    test.each([
       [[]],
       [[1, 2, 3]],
       [new MyClass()],

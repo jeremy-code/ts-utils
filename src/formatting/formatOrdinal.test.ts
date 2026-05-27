@@ -1,10 +1,10 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { formatOrdinal } from "./formatOrdinal";
 
 describe("formatOrdinal function", () => {
   describe("correctly appends ordinal suffix to numbers", () => {
-    it.each([
+    test.each([
       [1, "1st"],
       [2, "2nd"],
       [3, "3rd"],
@@ -24,7 +24,7 @@ describe("formatOrdinal function", () => {
   });
 
   describe("handles edge cases correctly", () => {
-    it.each([
+    test.each([
       [0, "0th"],
       [-1, "-1st"],
       [-2, "-2nd"],

@@ -1,11 +1,11 @@
-import { describe, expect, it, vitest } from "vitest";
+import { describe, expect, test, vitest } from "vitest";
 
 import { sleep } from "./sleep";
 
 describe("sleep", () => {
   vitest.useFakeTimers();
 
-  it("resolves after the specified time", async () => {
+  test("resolves after the specified time", async () => {
     const ms = 500;
     const start = Date.now();
 
@@ -19,7 +19,7 @@ describe("sleep", () => {
     expect(end - start).toBeGreaterThanOrEqual(ms);
   });
 
-  it("resolves immediately if no time is specified", async () => {
+  test("resolves immediately if no time is specified", async () => {
     const start = Date.now();
 
     const sleepPromise = sleep();

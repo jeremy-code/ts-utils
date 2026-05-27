@@ -1,11 +1,11 @@
-import { describe, expect, it, vitest } from "vitest";
+import { describe, expect, test, vitest } from "vitest";
 
 import { throttle } from "./throttle";
 
 describe("throttle", () => {
   vitest.useFakeTimers();
 
-  it("throttles calls correctly", () => {
+  test("throttles calls correctly", () => {
     const callback = vitest.fn();
     const throttledFunc = throttle(callback, 1000);
     throttledFunc();
@@ -19,7 +19,7 @@ describe("throttle", () => {
     expect(callback).toHaveBeenCalledTimes(2);
   });
 
-  it("immediate invocation", () => {
+  test("immediate invocation", () => {
     const callback = vitest.fn();
     const throttledFunc = throttle(callback, 1000, true);
 
@@ -34,7 +34,7 @@ describe("throttle", () => {
     expect(callback).toHaveBeenCalledTimes(2);
   });
 
-  it("passes arguments and maintains context", () => {
+  test("passes arguments and maintains context", () => {
     const context = { value: 42 };
     const callback = vitest.fn(function (this: { value: number }, arg) {
       expect(this.value).toBe(42);

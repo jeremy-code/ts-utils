@@ -1,9 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { hexToRgb, rgbToHex } from "./color";
 
 describe("hexToRgb function", () => {
-  it.each([
+  test.each([
     ["#000000", { r: 0, g: 0, b: 0 }],
     ["#ffffff", { r: 255, g: 255, b: 255 }],
     ["#FF5733", { r: 255, g: 87, b: 51 }],
@@ -15,7 +15,7 @@ describe("hexToRgb function", () => {
 });
 
 describe("rgbToHex function", () => {
-  it.each([
+  test.each([
     [{ r: 0, g: 0, b: 0 }, "#000000"],
     [{ r: 255, g: 255, b: 255 }, "#ffffff"],
     [{ r: 255, g: 87, b: 51 }, "#ff5733"],

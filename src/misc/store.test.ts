@@ -1,20 +1,20 @@
-import { describe, expect, it, vitest } from "vitest";
+import { describe, expect, test, vitest } from "vitest";
 
 import { createStore } from "./store";
 
 describe("createStore function", () => {
-  it("initializes with an object", () => {
+  test("initializes with an object", () => {
     const store = createStore({ count: 0 });
     expect(store.getSnapshot()).toEqual({ count: 0 });
   });
 
-  it("initializes with a function", () => {
+  test("initializes with a function", () => {
     const initialState = () => ({ count: 1 });
     const store = createStore(initialState);
     expect(store.getSnapshot()).toEqual({ count: 1 });
   });
 
-  it("updates the state and notifies listeners", () => {
+  test("updates the state and notifies listeners", () => {
     const store = createStore({ count: 0 });
     const listener = vitest.fn();
     store.subscribe(listener);
@@ -23,7 +23,7 @@ describe("createStore function", () => {
     expect(listener).toHaveBeenCalled();
   });
 
-  it("removes listeners correctly", () => {
+  test("removes listeners correctly", () => {
     const store = createStore({ count: 0 });
     const listener = vitest.fn();
     const unsubscribe = store.subscribe(listener);

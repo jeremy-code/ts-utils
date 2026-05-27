@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import {
   formatMs,
@@ -11,7 +11,7 @@ import {
 
 describe("conversion constants", () => {
   describe("return correct values for conversion constants", () => {
-    it.each([
+    test.each([
       [MS_PER_SECOND, 1000],
       [MS_PER_MINUTE, 60_000],
       [MS_PER_HOUR, 3_600_000],
@@ -27,7 +27,7 @@ describe("conversion constants", () => {
 
 describe("formatMs function", () => {
   describe("return formatted ms for base units", () => {
-    it.each([
+    test.each([
       [1, "1 ms"],
       [1000, "1 sec"],
       [60_000, "1 min"],
@@ -39,7 +39,7 @@ describe("formatMs function", () => {
   });
 
   describe("return formatted ms for multiples", () => {
-    it.each([
+    test.each([
       [500, "500 ms"],
       [10_000, "10 sec"],
       [600_000, "10 min"],
@@ -51,7 +51,7 @@ describe("formatMs function", () => {
   });
 
   describe("return formatted ms for fractional values", () => {
-    it.each([
+    test.each([
       [1234, "1.234 sec"],
       [123_456, "2.058 min"],
       [12_345_678, "3.429 hr"],
@@ -67,7 +67,7 @@ describe("formatMs function", () => {
       unitDisplay: "narrow",
     };
 
-    it.each([
+    test.each([
       // base units
       [1, "1ms"],
       [1000, "1s"],
@@ -89,7 +89,7 @@ describe("formatMs function", () => {
 
 describe("formatMsExact function", () => {
   describe("return formatted ms for base units", () => {
-    it.each([
+    test.each([
       [1, "1 ms"],
       [1000, "1 sec"],
       [60_000, "1 min"],
@@ -101,7 +101,7 @@ describe("formatMsExact function", () => {
   });
 
   describe("return formatted ms for multiple units", () => {
-    it.each([
+    test.each([
       [12_345, "12 sec 345 ms"],
       [123_456, "2 min 3 sec 456 ms"],
       [1_234_567, "20 min 34 sec 567 ms"],
@@ -118,7 +118,7 @@ describe("formatMsExact function", () => {
       unitDisplay: "narrow",
     };
 
-    it.each([
+    test.each([
       [1, "1ms"],
       [1000, "1s"],
       [60_000, "1m"],
@@ -135,7 +135,7 @@ describe("formatMsExact function", () => {
       unitDisplay: "narrow",
     };
 
-    it.each([
+    test.each([
       [12_345, "12s 345ms"],
       [123_456, "2m 3s 456ms"],
       [1_234_567, "20m 34s 567ms"],
