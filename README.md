@@ -546,6 +546,15 @@ export const standardDeviation = (...values: number[]) => {
  * having to wrap error handling in `if (error instanceof Error)`
  */
 export function assertIsError(error: unknown): asserts error is Error {
+  if ("isError" in Error) {
+    if (!Error.isError(error)) {
+      throw new Error(`Expected an Error but got ${typeof error}`, {
+        cause: error,
+      });
+    }
+    return;
+  }
+
   if (!(error instanceof Error)) {
     throw new Error(`Expected an Error but got ${typeof error}`, {
       cause: error,
@@ -867,6 +876,9 @@ const gcd = (a: number, b: number) => {
   if (b === 0) {
     return a;
   }
+
+  a = Math.abs(a);
+  b = Math.abs(b);
 
   while (b !== 0) {
     [a, b] = [b, a % b];

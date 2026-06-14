@@ -11,6 +11,10 @@ describe("gcd function", () => {
       [12, 0, 12],
       [0, 12, 12],
       [0, 0, 0],
+      [-12, -18, 6],
+      [-18, 12, 6],
+      [-12, 18, 6],
+      [12, -18, 6],
     ])("gcd(%d, %d) = %d", (a, b, expected) => {
       expect(gcd(a, b)).toBe(expected);
     });

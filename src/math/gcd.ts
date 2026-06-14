@@ -10,6 +10,9 @@ const gcd = (a: number, b: number) => {
     return a;
   }
 
+  a = Math.abs(a);
+  b = Math.abs(b);
+
   while (b !== 0) {
     [a, b] = [b, a % b];
   }
