@@ -1,5 +1,5 @@
 import type { Dirent } from "node:fs";
-import fs, { readdir } from "node:fs/promises";
+import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join, relative } from "node:path";
 
 /**
@@ -74,7 +74,7 @@ const updateReadMe = async () => {
 
       const description = await Promise.all(
         dirents.map(async (d) => {
-          const content = await fs.readFile(join(d.parentPath, d.name), {
+          const content = await readFile(join(d.parentPath, d.name), {
             encoding: "utf8",
           });
 
@@ -88,7 +88,7 @@ const updateReadMe = async () => {
 
   const readMe = [HEADER, "# Table of Contents", toc, ...content].join(NEWLINE);
 
-  await fs.writeFile("./README.md", readMe, { encoding: "utf8" });
+  await writeFile("./README.md", readMe, { encoding: "utf8" });
 
   console.log("✅ README.md has been generated successfully.");
 };
